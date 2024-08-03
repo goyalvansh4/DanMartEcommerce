@@ -1,0 +1,41 @@
+/* src/App.css */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header {
+  background-color: black;
+}
+
+.header a {
+  color: white;
+}
+
+.header svg {
+  cursor: pointer;
+}
+
+.banner img {
+  width: 100%;
+}
+
+.categories {
+  background-color: #f3f3f3;
+}
+
+.products {
+  background-color: #ffffff;
+}
+
+.products .product {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  transition: box-shadow 0.3s;
+}
+
+.products .product:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
