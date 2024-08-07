@@ -39,3 +39,20 @@ body {
 .products .product:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
+
+.slider-custom {
+  padding: 0 20px; /* Adjust padding as needed */
+}
+
+.slider-custom .slick-slide {
+  margin: 0 10px; /* Adjust space between slides */
+}
+
+.slider-custom .slick-list {
+  overflow: hidden; /* Ensure no horizontal scroll */
+}
+
+.slide-item img {
+  padding: 10px; /* Add padding to images if needed */
+}

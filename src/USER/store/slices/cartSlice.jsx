@@ -1,18 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import GlobalAxios from '../../../../Global/GlobalAxios';
 
-const products = [
-  { id: 1, name: 'Navigator Essential', price: 500, originalPrice: 750, imgSrc: 'product1.jpg' },
-  { id: 2, name: 'Vintage Brass Compass Set', price: 500, originalPrice: 1350, imgSrc: 'product2.jpg' },
-  { id: 3, name: 'Navigate with Confidence', price: 500, originalPrice: 850, imgSrc: 'product3.jpg' },
-  { id: 4, name: 'Navigate Your Destiny with Grace', price: 500, originalPrice: 1200, imgSrc: 'product4.jpg' },
-  { id: 5, name: 'Vanilla Velvet Brew', price: 500, originalPrice: 1050, imgSrc: 'product5.jpg' },
-];
-
+// Define an async thunk for fetching products
+export const fetchProductsThunk = createAsyncThunk(
+  'cart/fetchProducts',
+  async () => {
+    const response = await GlobalAxios.get('/products');
+    return response.data.data;
+  }
+);
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
-    items: products,
+    items: [],
+    loading: false,
+    error: null,
   },
   reducers: {
     addItem: (state, action) => {
@@ -23,6 +26,21 @@ const cartSlice = createSlice({
       console.log(action.payload);
       state.items = state.items.filter(item => item.id !== action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProductsThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductsThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchProductsThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 

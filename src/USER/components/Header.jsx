@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { FaShoppingCart } from "react-icons/fa";
-import { NavLink } from 'react-router-dom'; 
-import CartIconWithBadge from './NavBar/CartIconWithBadge';
+import { NavLink } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,12 +46,6 @@ const Header = () => {
                 Contact
               </NavLink>
             </li>
-            <li>
-              <NavLink className="md:p-4 py-2 block hover:text-[#FFD700]" to="/login">
-                Sign In
-              </NavLink>
-            </li>
-            <CartIconWithBadge />
           </ul>
         </div>
       </nav>
