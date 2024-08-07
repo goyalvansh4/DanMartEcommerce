@@ -6,17 +6,17 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import ShoppingCart from './pages/ShoppingCart.jsx';
-import Main from './pages/Main.jsx';
-import CheckOut from './pages/CheckOut.jsx';
-import store from './store/store.jsx';
+import ShoppingCart from './USER/pages/ShoppingCart.jsx';
+import Main from './USER/pages/Main.jsx';
+import CheckOut from './USER/pages/CheckOut.jsx';
+import store from './USER/store/store.jsx';
 import { Provider } from 'react-redux';
-import AboutUs from './pages/AboutUs.jsx';
-import ContactUs from './pages/ContactUs.jsx';
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import ProductView from './pages/ProductView.jsx';
-import ProtectedRoute from './routes/ProtectedRoutes.jsx';  // Import the ProtectedRoute component
+import AboutUs from './USER/pages/AboutUs.jsx';
+import ContactUs from './USER/pages/ContactUs.jsx';
+import Login from './USER/pages/Login.jsx';
+import Register from './USER/pages/Register.jsx';
+import ProductView from './USER/pages/ProductView.jsx';
+import ProtectedRoute from './USER/routes/ProtectedRoutes.jsx';  // Import the ProtectedRoute component
 
 const router = createBrowserRouter([
   {

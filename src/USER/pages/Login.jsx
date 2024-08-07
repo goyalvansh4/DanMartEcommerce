@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Navigate, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../store/slices/authSlice'; // Adjust the path according to your project structure
 
@@ -7,7 +7,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -20,6 +20,7 @@ const Login = () => {
     setTimeout(() => {
       dispatch(login()); // Dispatch the login action
       setLoading(false);
+      navigate('/');
     }, 2000);
   };
 

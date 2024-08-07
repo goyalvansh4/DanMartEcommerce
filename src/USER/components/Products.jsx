@@ -23,13 +23,13 @@ const Products = () => {
   };
 
   return (
-    <div  className="font-[sans-serif] py-4 mx-auto lg:max-w-6xl max-w-lg md:max-w-full">
+    <div className="font-[sans-serif] py-4 mx-auto lg:max-w-6xl max-w-lg md:max-w-full">
       <h2 className="text-4xl font-extrabold text-gray-800 mb-4">Our Products</h2>
       <p className="text-xl font-semibold text-gray-700 mb-12">Represent Latest Products In Market</p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
           <div key={product.id} className="bg-gray-200 rounded-xl cursor-pointer hover:scale-[1.03] transition-all relative overflow-hidden">
-            <NavLink to={`/products/${product.id}`} className="block">
+            <NavLink to={`/products`} className="block">
               <div className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4 z-10">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16px" className="fill-gray-800 inline-block" viewBox="0 0 64 64">
                   <path
@@ -37,8 +37,8 @@ const Products = () => {
                     data-original="#000000"></path>
                 </svg>
               </div>
-              <div className="w-full h-[250px] overflow-hidden mx-auto">
-                <img src={product.imgSrc} alt={product.name} className="w-full h-full object-cover" />
+              <div className="w-full overflow-hidden mx-auto">
+                <img src={product.imgSrc} alt={product.name} className="w-full h-[300px] object-cover object-center" />
               </div>
             </NavLink>
             <div className="text-center bg-gray-100 p-6">
@@ -50,6 +50,7 @@ const Products = () => {
                 type="button"
                 className="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-yellow-400 text-base text-gray-800 font-semibold rounded-xl hover:bg-yellow-500 transition duration-150"
                 onClick={() => handleAddToCart(product)}
+                disabled={cartItems.some(item => item.id === product.id)}
               >
                 {loading === product.id ? <ClipLoader size={20} color={"#fff"} /> : (
                   <>

@@ -75,7 +75,7 @@ const Register = () => {
                 </svg>
               </a>
               <h1 className="mt-6 text-2xl font-bold text-gray-700 sm:text-3xl md:text-4xl dark:text-white">
-                Welcome to visionOverseas 🌏
+                Welcome to VisionOverseas 🌏
               </h1>
               <p className="mt-4 leading-relaxed text-gray-500 dark:text-gray-400">
                 Discover new horizons with our platform. Join us and explore the world of opportunities.
@@ -136,33 +136,31 @@ const Register = () => {
                   className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
               </div>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  />
-                </div>
+              <div>
+                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
               </div>
               <div>
                 <button
@@ -173,6 +171,13 @@ const Register = () => {
                 </button>
               </div>
             </form>
+
+            <p className='text-white text-center'>
+              Already have an account?{' '}
+              <NavLink to="/login" className="text-blue-600 hover:underline">
+                Login
+              </NavLink>
+            </p>
           </div>
         </div>
       </div>
