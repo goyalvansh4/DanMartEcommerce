@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Banner2 = () => {
+const Banner2 = ({src}) => {
   const slide = {
-    image: 'banner.jpeg',
+    // image: 'banner.jpeg',
     title: 'New To The Product World',
     description: 'Product line is a group of products related to one another',
   };
@@ -10,7 +10,7 @@ const Banner2 = () => {
   return (
     <div className="w-full h-[400px] my-6 overflow-hidden relative">
       <img 
-        src={slide.image} 
+        src={src} 
         alt="Banner" 
         className="w-full  object-cover" 
       />

@@ -20,6 +20,7 @@ const ImageWrapper = () => {
     <div className="container mx-auto px-5 py-10">
       <Swiper
         // modules={[Pagination]}
+        effect='fade'
         slidesPerView={3}
         spaceBetween={20}
         pagination={{ clickable: true }}
@@ -39,11 +40,11 @@ const ImageWrapper = () => {
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
-            <div className="relative flex justify-center items-center bg-gray-200 rounded-lg overflow-hidden p-4">
+            <div className="relative flex justify-center items-center rounded-lg shadow-lg shadow-slate-500 h-[300px] my-3 overflow-hidden">
               <img
                 src={image.src}
                 alt={image.text}
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-full object-contains rounded-lg"
               />
               <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg">
                 <h2 className="text-white text-sm md:text-lg lg:text-xl text-center font-bold mb-2 md:mb-4">
