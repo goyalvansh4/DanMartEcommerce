@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem, fetchProductsThunk } from "../../store/slices/cartSlice";
+import { addWishlistItem } from "../../store/slices/wishListSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -28,6 +29,11 @@ const Products = () => {
     }, 1000);
   };
 
+  const handleAddToWishlist = (product) => {
+    dispatch(addWishlistItem(product));
+    toast.success(`${product.name} added to wishlist!`);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -46,7 +52,10 @@ const Products = () => {
             className="bg-gray-200 rounded-xl cursor-pointer hover:scale-[1.03] transition-all relative overflow-hidden"
           >
             <NavLink to={`/products`} className="block">
-              <div className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4 z-10">
+              <div
+                className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4 z-10"
+                onClick={() => handleAddToWishlist(product)}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16px"

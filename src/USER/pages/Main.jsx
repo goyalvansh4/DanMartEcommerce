@@ -6,6 +6,7 @@ import Banner2 from '../components/Banner2';
 import TopProducts from '../components/Products/TopProducts';
 import Navbar from '../components/NavBar/NavBar';
 import NewArrival from '../components/Products/NewArrival';
+import ProductView from './ProductView';
 
 const Main = () => {
   return (
@@ -14,10 +15,11 @@ const Main = () => {
      <Banner />
      <ImageWrapper />
       <Home />
-      <Banner2 src="banner.jpeg" />
+      <Banner2 src="banner.jpeg" title="New To The Product World" />
       <TopProducts />
-      <Banner2 src="banner2.jpg" />
+      <Banner2 src="banner2.jpg" title="New Arrival Product" />
       <NewArrival />
+      {/* <ProductView /> */}
     </>
   )
 }

@@ -17,6 +17,7 @@ import Login from './USER/pages/Login.jsx';
 import Register from './USER/pages/Register.jsx';
 import ProductView from './USER/pages/ProductView.jsx';
 import ProtectedRoute from './USER/routes/ProtectedRoutes.jsx';  // Import the ProtectedRoute component
+import WishList from './USER/pages/WishList.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CheckOut />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path:"/wishlist",
+        element: (
+          <ProtectedRoute>
+            <WishList />
           </ProtectedRoute>
         ),
       },

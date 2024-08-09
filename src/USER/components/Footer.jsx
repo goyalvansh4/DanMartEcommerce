@@ -114,8 +114,8 @@ const Footer = () => {
       </div>
 
       <p class="text-gray-300 text-sm mt-10">
-        © {new Date().getFullYear()}
-        made with ❤️ by
+        © { new Date().getFullYear() }
+         {" "} made with ❤️ by
         <a
           href="https:www.febtech.in"
           target="_blank"
