@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem, fetchProductsThunk } from '../../store/slices/cartSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ClipLoader from 'react-spinners/ClipLoader';
+import { HashLoader } from 'react-spinners';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -61,7 +61,8 @@ const TopProducts = () => {
     ],
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div className="text-center py-4 flex flex-col items-center justify-center"><HashLoader  size={50} color={"#123abc"} />
+  <p className="text-black text-lg">Loading... Please Wait</p></div>;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -82,7 +83,7 @@ const TopProducts = () => {
               </svg>
             </div>
             <div className="product-image w-full overflow-hidden mx-auto mb-4">
-              <img src={product.imgSrc} alt={product.name} className="w-full h-64 object-cover object-center rounded-xl" />
+              <img src={`http://192.168.160.152:8000/storage/${product.imgSrc}`} alt={product.name} className="w-full h-64 object-cover object-center rounded-xl" />
             </div>
             <div className="product-info text-center bg-gray-100 p-6 rounded-b-xl">
               <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>

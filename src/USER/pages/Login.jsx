@@ -1,27 +1,38 @@
 import React, { useState } from 'react';
-import { Navigate, NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../store/slices/authSlice'; // Adjust the path according to your project structure
+import { NavLink, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import GlobalAxios from '../../../Global/GlobalAxios';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate an async login request
-    setTimeout(() => {
-      dispatch(login()); // Dispatch the login action
-      setLoading(false);
-      navigate('/');
-    }, 2000);
+    const data = {
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
+    console.log(data);
+     try {
+      const response  = await GlobalAxios.post('/login',data);
+      console.log(response.data);
+      const { token } = response.data.data;
+      if(response.data.status === 'success'){
+        setLoading(false);
+        Cookies.set('authToken', token , { expires: 1 }); // Set a cookie with a sample token and 1-day expiration
+        navigate('/');
+      }
+
+     } catch (error) {
+      console.error("Login Error",error);
+     }   
   };
 
   return (
@@ -128,7 +139,7 @@ const Login = () => {
                 'Sign In'
               )}
             </button>
-            <div className='text-center mt-3'>
+            <div className="text-center mt-3">
               <span>Don't have an account?</span>
               <NavLink className="text-blue-500" to="/signup"> Register Here</NavLink>
             </div>

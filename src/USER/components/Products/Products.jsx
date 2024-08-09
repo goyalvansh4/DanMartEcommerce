@@ -8,8 +8,10 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { NavLink } from "react-router-dom";
 
 const Products = () => {
+  
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.cart);
+  const [myloading, setLoading] = useState(loading);
   const [homeProducts, setHomeProducts] = useState([]);
 
   useEffect(() => {
@@ -34,7 +36,8 @@ const Products = () => {
     toast.success(`${product.name} added to wishlist!`);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div className="text-center flex flex-col items-center justify-center"><ClipLoader  size={50} color={"#123abc"} />
+  <p className="text-black text-lg">Loading... Please Wait</p></div>;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -54,7 +57,7 @@ const Products = () => {
             <NavLink to={`/products`} className="block">
               <div
                 className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4 z-10"
-                onClick={() => handleAddToWishlist(product)}
+                onClick={() => handleAddToWishlist(product.id)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -68,11 +71,11 @@ const Products = () => {
                   ></path>
                 </svg>
               </div>
-              <div className="w-full overflow-hidden mx-auto">
+              <div className="bg-white w-full overflow-hidden mx-auto">
                 <img
-                  src={product.imgSrc}
+                  src={`http://192.168.160.152:8000/storage/${product.thumbnail}`}
                   alt={product.name}
-                  className="w-full h-[300px] object-cover object-center"
+                  className="w-full h-[350px] object-cover aspect-square"
                 />
               </div>
             </NavLink>
@@ -90,9 +93,8 @@ const Products = () => {
                 type="button"
                 className="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-yellow-400 text-base text-gray-800 font-semibold rounded-xl hover:bg-yellow-500 transition duration-150"
                 onClick={() => handleAddToCart(product)}
-                disabled={items.some((item) => item.id === product.id)}
               >
-                {loading === product.id ? (
+                {myloading === product.id ? (
                   <ClipLoader size={20} color={"#fff"} />
                 ) : (
                   <>
