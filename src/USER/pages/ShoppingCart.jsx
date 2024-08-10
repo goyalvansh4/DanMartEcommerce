@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { removeItem } from '../store/slices/cartSlice';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Dummy product data
-  const dummyProduct = {
-    id: 1,
-    imgSrc: 'https://via.placeholder.com/150',
-    name: 'Sample Product',
-    price: 20.00,
-    quantity: 1
-  };
+  // // Dummy product data
+  // const dummyProduct = {
+  //   id: 1,
+  //   imgSrc: 'https://via.placeholder.com/150',
+  //   name: 'Sample Product',
+  //   price: 20.00,
+  //   quantity: 1
+  // };
 
-  const cartItems = useSelector((state) => state.cart.items);
+  // const cartItems = useSelector((state) => state.cart.items);
+  const cartItems=[];
   const [totalPrice, setTotalPrice] = useState(0);
-  const [cartData, setCartData] = useState([...cartItems, dummyProduct]);
+  const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
     const calculateTotal = () => {
@@ -35,17 +35,17 @@ const ShoppingCart = () => {
   }, [cartData]);
 
   const handleCheckout = () => {
-    navigate('/checkout');
+    navigate("/checkout");
   };
 
   const handleRemove = (id) => {
     dispatch(removeItem(id));
-    setCartData(cartData.filter(item => item.id !== id));
-    toast.info('Item removed from cart');
+    setCartData(cartData.filter((item) => item.id !== id));
+    toast.info("Item removed from cart");
   };
 
   const handleShopping = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -68,18 +68,31 @@ const ShoppingCart = () => {
                   exit={{ opacity: 0, x: 100 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="flex items-center gap-4">
+                  <div key={item.id} className="flex items-center gap-4">
                     <div className="w-24 h-24 bg-white p-2 rounded-md">
-                      <img src={item.imgSrc} className="w-full h-full object-contain" alt={item.name} />
+                      <img
+                        src={item.imgSrc}
+                        className="w-full h-full object-contain"
+                        alt={item.name}
+                      />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-800">{item.name}</h3>
-                      <div className="text-sm text-gray-600">Quantity: {item.quantity}</div>
-                      <h4 className="text-base font-bold text-gray-800">${item.price}</h4>
+                      <h3 className="text-base font-bold text-gray-800">
+                        {item.name}
+                      </h3>
+                      <div className="text-sm text-gray-600">
+                        Quantity: {item.quantity}
+                      </div>
+                      <h4 className="text-base font-bold text-gray-800">
+                        ${item.price}
+                      </h4>
                     </div>
                   </div>
                   <div className="ml-auto">
-                    <button onClick={() => handleRemove(item.id)} className="text-red-500 text-xs font-bold">
+                    <button
+                      onClick={() => handleRemove(item.id)}
+                      className="text-red-500 text-xs font-bold"
+                    >
                       Remove
                     </button>
                   </div>
@@ -90,7 +103,9 @@ const ShoppingCart = () => {
         </div>
 
         <div className="bg-gray-100 p-4 rounded-md md:sticky top-0">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Price Details</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Price Details
+          </h2>
           <hr className="border-gray-300 mb-8" />
 
           <ul className="text-gray-800 space-y-4">
@@ -117,10 +132,18 @@ const ShoppingCart = () => {
           </ul>
 
           <div className="mt-8 space-y-2">
-            <button onClick={handleCheckout} type="button" className="w-full text-sm px-4 py-2.5 font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+            <button
+              onClick={handleCheckout}
+              type="button"
+              className="w-full text-sm px-4 py-2.5 font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+            >
               Place Order
             </button>
-            <button onClick={handleShopping} type="button" className="w-full text-sm px-4 py-2.5 font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md">
+            <button
+              onClick={handleShopping}
+              type="button"
+              className="w-full text-sm px-4 py-2.5 font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"
+            >
               Continue Shopping
             </button>
           </div>

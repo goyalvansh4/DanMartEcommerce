@@ -10,22 +10,12 @@ export const fetchProductsThunk = createAsyncThunk(
   }
 );
 
-const cartSlice = createSlice({
-  name: 'cart',
+const productsSlice = createSlice({
+  name: 'products',
   initialState: {
     items: [],
     loading: false,
     error: null,
-  },
-  reducers: {
-    addItem: (state, action) => {
-      state.items.push(action.payload);
-    },
-    removeItem: (state, action) => {
-      console.log("Removing item from cart");
-      console.log(action.payload);
-      state.items = state.items.filter(item => item.id !== action.payload);
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -44,6 +34,4 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addItem, removeItem } = cartSlice.actions;
-
-export default cartSlice.reducer;
+export default productsSlice.reducer;

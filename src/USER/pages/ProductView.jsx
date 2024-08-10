@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addItem } from "../store/slices/cartSlice";
+// import { addItem } from "../store/slices/productsSlice";
 import { toast } from "react-toastify";
 import {
   FaShippingFast,
@@ -11,16 +11,49 @@ import {
 } from "react-icons/fa";
 import SimilarProducts from "../components/SimilarProducts";
 import Navbar from "../components/NavBar/NavBar";
+import { useParams } from "react-router-dom";
+import GlobalAxios from "../../../Global/GlobalAxios";
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(null);
   const [mainImage, setMainImage] = useState("product1.jpg");
+  const [productInfo, setProductInfo] = useState({
+    id: '',
+    name: "",
+    price: 0,
+    originalPrice: 0,
+    imgSrc: "",
+    smallImages: [],
+    description: "",
+    details: {
+      weight: "",
+      brand: "",
+      style: "",
+      modelName: "",
+      suggestedUsers: "",
+      material: "",
+      feature: "",
+    },
+    
+
+
+  });
+   const {id, slug} = useParams();
+
+  useEffect(() => {
+    const  fetchData = async () => {
+      const response = await GlobalAxios.get(`/product/${id}/${slug}`);
+      console.log(response.data);
+    }
+
+    fetchData();
+  }, []);
 
   const handleAddToCart = (product) => {
     setLoading(product.id);
     setTimeout(() => {
-      dispatch(addItem(product));
+      // dispatch(addItem(product));
       toast.success(`${product.name} added to cart!`);
       setLoading(null);
     }, 1000);
@@ -61,7 +94,7 @@ const ProductDetails = () => {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="flex flex-col md:flex-row items-start justify-center w-full p-6 text-gray-800 shadow-lg box-border">
         <div className="flex-1 max-w-lg mb-6 md:mb-0 md:mr-6">
           <img
@@ -70,7 +103,7 @@ const ProductDetails = () => {
             className="w-full h-auto rounded-lg"
           />
           <div className="flex mt-4 space-x-2">
-            {product.smallImages.map((src, index) => (
+            {/* {product.smallImages.map((src, index) => (
               <img
                 key={index}
                 src={src}
@@ -78,7 +111,7 @@ const ProductDetails = () => {
                 className="w-16 h-16 rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-200"
                 onClick={() => handleImageClick(src)}
               />
-            ))}
+            ))} */}
           </div>
         </div>
         <div className="flex-2 max-w-2xl bg-white p-6 rounded-lg shadow-md">
@@ -202,7 +235,9 @@ const ProductDetails = () => {
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Material:</p>
-            <p className="text-base text-gray-700">{product.details.material}</p>
+            <p className="text-base text-gray-700">
+              {product.details.material}
+            </p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Feature:</p>
@@ -210,8 +245,8 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-      
-        <SimilarProducts />
+
+      <SimilarProducts />
     </>
   );
 };

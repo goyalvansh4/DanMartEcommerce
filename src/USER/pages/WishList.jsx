@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { fetchWishlistThunk, removeWishlistItem } from "../store/slices/wishListSlice";
-import { addItem } from "../store/slices/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -10,14 +9,12 @@ import ClipLoader from "react-spinners/ClipLoader";
 const WishList = () => {
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.wish.items);
-  const cartItems = useSelector((state) => state.cart.items);
 
   useEffect(() => {
     dispatch(fetchWishlistThunk());
   }, [dispatch]);
 
   const handleAddToCart = (product) => {
-    dispatch(addItem(product));
     toast.success(`${product.name} added to cart!`);
   };
 

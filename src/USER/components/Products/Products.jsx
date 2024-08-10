@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, fetchProductsThunk } from "../../store/slices/cartSlice";
+import { fetchProductsThunk } from "../../store/slices/productsSlice";
 import { addWishlistItem } from "../../store/slices/wishListSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { NavLink } from "react-router-dom";
+import StarRating from "../StarRating";
 
 const Products = () => {
-  
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.cart);
+  const { items, loading, error } = useSelector((state) => state.products);
+  console.log(items);
   const [myloading, setLoading] = useState(loading);
   const [homeProducts, setHomeProducts] = useState([]);
 
@@ -25,7 +26,7 @@ const Products = () => {
   const handleAddToCart = (product) => {
     setLoading(product.id);
     setTimeout(() => {
-      dispatch(addItem(product));
+      // dispatch(addItem(product));
       toast.success(`${product.name} added to cart!`);
       setLoading(null);
     }, 1000);
@@ -35,9 +36,17 @@ const Products = () => {
     dispatch(addWishlistItem(product));
     toast.success(`${product.name} added to wishlist!`);
   };
-
-  if (loading) return <div className="text-center flex flex-col items-center justify-center"><ClipLoader  size={50} color={"#123abc"} />
-  <p className="text-black text-lg">Loading... Please Wait</p></div>;
+  const handleRandomPrice = (price) => {
+    const originalPrice = Math.floor(Math.random() * price) + 1;
+    return originalPrice;
+  };
+  if (loading)
+    return (
+      <div className="text-center flex flex-col items-center justify-center">
+        <ClipLoader size={50} color={"#123abc"} />
+        <p className="text-black text-lg">Loading... Please Wait</p>
+      </div>
+    );
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -54,7 +63,7 @@ const Products = () => {
             key={product.id}
             className="bg-gray-200 rounded-xl cursor-pointer hover:scale-[1.03] transition-all relative overflow-hidden"
           >
-            <NavLink to={`/products`} className="block">
+            <NavLink to={`/products/${product.product_id}/${product.products_slug}`} className="block">
               <div
                 className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4 z-10"
                 onClick={() => handleAddToWishlist(product.id)}
@@ -80,15 +89,18 @@ const Products = () => {
               </div>
             </NavLink>
             <div className="text-center bg-gray-100 p-6">
-              <h3 className="text-lg font-bold text-gray-800">
-                {product.name}
+              <h3 className="text-lg truncate font-bold text-gray-800">
+                {product.product_name}
               </h3>
               <h4 className="text-lg text-gray-800 font-bold mt-6">
                 ${product.price}{" "}
                 <strike className="text-gray-400 ml-2 font-medium">
-                  ${product.originalPrice}
+                  ${product.price + handleRandomPrice(product.price)}
                 </strike>
               </h4>
+              <div className="mt-2 flex justify-center">
+                <StarRating rating={4} />
+              </div>
               <button
                 type="button"
                 className="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-yellow-400 text-base text-gray-800 font-semibold rounded-xl hover:bg-yellow-500 transition duration-150"

@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const [cartItemCount, setCartItemCount] = useState(0);
-   const cartItems = useSelector((state) => state.cart.items);
+  //  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = [];
    useEffect(() => {
     setCartItemCount(cartItems.length);
    },[cartItems]);

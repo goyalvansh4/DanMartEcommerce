@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, fetchProductsThunk } from '../../store/slices/cartSlice';
+import { fetchProductsThunk } from '../../store/slices/productsSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from 'react-spinners';
@@ -10,7 +10,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const TopProducts = () => {
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector((state) => state.cart);
+  const { items, loading, error } = useSelector((state) => state.products);
   const [homeProducts, setHomeProducts] = useState([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const TopProducts = () => {
 
   const handleAddToCart = (product) => {
     setTimeout(() => {
-      dispatch(addItem(product));
+      // dispatch(addItem(product));
       toast.success(`${product.name} added to cart!`);
     }, 1000);
   };

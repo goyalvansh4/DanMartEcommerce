@@ -73,7 +73,7 @@ const Categories = () => {
               <li key={itemIndex}>
                 <a
                   href="#"
-                  className="text-black hover:text-blue-600 text-[15px] block hover:bg-blue-50 rounded px-4 py-2.5 transition-all"
+                  className="text-gray-500 capitalize hover:text-blue-600 text-[17px] block hover:bg-blue-50 rounded px-4 py-2.5 transition-all"
                 >
                   {item.name || item} {/* Assuming items have a `name` property */}
                 </a>
