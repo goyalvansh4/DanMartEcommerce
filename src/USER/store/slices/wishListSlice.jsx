@@ -11,21 +11,30 @@ export const fetchWishlistThunk = createAsyncThunk(
   "wishlist/fetchWishlist",
   async () => {
     const response = await GlobalAxios.get("/wishlist");
-    return (response.data.data ? response.data.data : []);
+    console.log(response.data.data);
+    return response.data.data;
+  }
+);
+
+export const addWishlistThunk = createAsyncThunk(
+  "wishlist/addWishlist",
+  async (productId) => {
+    const response = await GlobalAxios.post("/wishlist", { product_id: productId });
+    return response.data.data;
+  }
+);
+
+export const removeWishlistThunk = createAsyncThunk(
+  "wishlist/removeWishlist",
+  async (productId) => {
+    const response = await GlobalAxios.delete(`/wishlist/${productId}`);
+    return response.data.data;
   }
 );
 
 const wishlistSlice = createSlice({
   name: "wish",
   initialState,
-  reducers: {
-    addWishlistItem: (state, action) => {
-      state.items.push(action.payload);
-    },
-    removeWishlistItem: (state, action) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
-    },
-  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchWishlistThunk.pending, (state) => {
@@ -38,10 +47,31 @@ const wishlistSlice = createSlice({
       .addCase(fetchWishlistThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(addWishlistThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addWishlistThunk.fulfilled, (state, action) => {
+        state.items.push(action.payload); 
+        state.loading = false;
+      })
+      .addCase(addWishlistThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(removeWishlistThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeWishlistThunk.fulfilled, (state, action) => {
+        state.items = state.items.filter((item) => item.product_id !== action.meta.arg); // Corrected line
+        state.loading = false;
+      })
+      .addCase(removeWishlistThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
-  },
+  }
 });
 
-export const { addWishlistItem, removeWishlistItem } = wishlistSlice.actions;
 
 export default wishlistSlice.reducer;

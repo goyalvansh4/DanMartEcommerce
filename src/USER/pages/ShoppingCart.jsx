@@ -4,49 +4,70 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
+import {  fetchCartItems, removeCartItem } from "../store/slices/cartSlice";
+import GlobalAxios from "../../../Global/GlobalAxios";
+const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // // Dummy product data
-  // const dummyProduct = {
-  //   id: 1,
-  //   imgSrc: 'https://via.placeholder.com/150',
-  //   name: 'Sample Product',
-  //   price: 20.00,
-  //   quantity: 1
-  // };
-
-  // const cartItems = useSelector((state) => state.cart.items);
-  const cartItems=[];
   const [totalPrice, setTotalPrice] = useState(0);
   const [cartData, setCartData] = useState([]);
+  const cartItems = useSelector((state) => state.cart.items);
 
   useEffect(() => {
-    const calculateTotal = () => {
-      let total = 0;
-      cartData.forEach((item) => {
-        total += item.price; // * item.quantity
-      });
-      setTotalPrice(total);
-    };
-    calculateTotal();
-  }, [cartData]);
+    dispatch(fetchCartItems());
+  }, []);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      const response = await GlobalAxios.get("/cart");
+      console.log(response.data.data);
+      setCartData(response.data.data.carts);
+      setTotalPrice(Number(response.data.data.total_price));
+
+    }
+    fetchCartItems();
+  }, []);
+
+  // useEffect(() => {
+  //   const calculateTotal = () => {
+  //     let total = 0;
+  //     cartData.forEach((item) => {
+  //       total += item.price; // * item.quantity
+  //     });
+  //     setTotalPrice(total);
+  //   };
+  //   calculateTotal();
+  // }, [cartData]);
 
   const handleCheckout = () => {
     navigate("/checkout");
   };
 
-  const handleRemove = (id) => {
-    dispatch(removeItem(id));
-    setCartData(cartData.filter((item) => item.id !== id));
+  const handleRemove = async(id) => {
+    console.log(id);
+    dispatch(removeCartItem(id));
+    setCartData(cartData.filter((item) => item.product_id !== id));
     toast.info("Item removed from cart");
   };
 
   const handleShopping = () => {
     navigate("/");
   };
+  
+  if(!cartItems) {
+    return (
+      <div className="my-10 md:max-w-5xl mx-auto bg-white py-8 px-4">
+          <div className="text-center text-gray-800 text-lg font-semibold">
+            Your cart is empty
+          </div>
+        </div>  
+    )
+  }
+
+
 
   return (
     <div className="my-10 md:max-w-5xl mx-auto bg-white py-8 px-4">
@@ -61,17 +82,17 @@ const ShoppingCart = () => {
             <AnimatePresence>
               {cartData.map((item) => (
                 <motion.div
-                  key={item.id}
+                  key={item.product_id}
                   className="flex items-center justify-between bg-white p-4 rounded-md shadow-md"
                   initial={{ opacity: 0, x: -100 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 100 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div key={item.id} className="flex items-center gap-4">
+                  <div key={item.product_id} className="flex items-center gap-4">
                     <div className="w-24 h-24 bg-white p-2 rounded-md">
                       <img
-                        src={item.imgSrc}
+                        src={`${imageURI + item.thumbnail}`}
                         className="w-full h-full object-contain"
                         alt={item.name}
                       />
@@ -84,13 +105,16 @@ const ShoppingCart = () => {
                         Quantity: {item.quantity}
                       </div>
                       <h4 className="text-base font-bold text-gray-800">
-                        ${item.price}
+                        Price:${item.price}
+                      </h4>
+                      <h4 className="text-base font-bold text-gray-800">
+                        Total Price:${item.total}
                       </h4>
                     </div>
                   </div>
                   <div className="ml-auto">
                     <button
-                      onClick={() => handleRemove(item.id)}
+                      onClick={() => handleRemove(item.product_id)}
                       className="text-red-500 text-xs font-bold"
                     >
                       Remove
@@ -111,7 +135,7 @@ const ShoppingCart = () => {
           <ul className="text-gray-800 space-y-4">
             <li className="flex justify-between">
               <span>Total Price</span>
-              <span className="font-bold">${totalPrice.toFixed(2)}</span>
+              <span className="font-bold">${(totalPrice)}</span>
             </li>
             <li className="flex justify-between">
               <span>Shipping Fee</span>
@@ -127,7 +151,7 @@ const ShoppingCart = () => {
             </li>
             <li className="flex justify-between text-lg font-bold">
               <span>Total Amount</span>
-              <span>${(totalPrice + 2 + 4).toFixed(2)}</span>
+              <span>${(totalPrice + 2 + 4)}</span>
             </li>
           </ul>
 

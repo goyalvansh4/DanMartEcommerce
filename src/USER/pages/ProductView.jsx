@@ -13,40 +13,57 @@ import SimilarProducts from "../components/SimilarProducts";
 import Navbar from "../components/NavBar/NavBar";
 import { useParams } from "react-router-dom";
 import GlobalAxios from "../../../Global/GlobalAxios";
+const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(null);
-  const [mainImage, setMainImage] = useState("product1.jpg");
+  const [mainImage, setMainImage] = useState("");
   const [productInfo, setProductInfo] = useState({
-    id: '',
+    id: "",
     name: "",
-    price: 0,
-    originalPrice: 0,
-    imgSrc: "",
-    smallImages: [],
-    description: "",
-    details: {
-      weight: "",
-      brand: "",
-      style: "",
-      modelName: "",
-      suggestedUsers: "",
-      material: "",
-      feature: "",
-    },
-    
-
-
+    slug: "",
+    thumbnail: "",
+    category_id: "",
+    price: "",
+    status: "",
+    min_order_quantity: "",
+    top_product: "",
+    featured_product: "",
+    best_seller: "",
+    created_at: "",
+    updated_at: "",
+    product_id: "",
+    long_description: "",
+    description_img1: "",
+    description_img2: "",
+    seo_title: "",
+    seo_description: "",
+    weight: "",
+    dimensions: null,
+    brand: "",
+    style: "",
+    model_name: "",
+    suggested_users: "",
+    product_material: "",
+    special_features: null,
+    category_name: "",
+    image_id: "",
+    path: "",
+    images: [],
   });
-   const {id, slug} = useParams();
+  const { id, slug } = useParams();
 
   useEffect(() => {
-    const  fetchData = async () => {
+    const fetchData = async () => {
       const response = await GlobalAxios.get(`/product/${id}/${slug}`);
-      console.log(response.data);
-    }
-
+      console.log(response.data.data);
+      window.scrollTo(0, 0);
+      if (response.data.status === "success") {
+        setProductInfo(response.data.data);
+        setMainImage(response.data.data.thumbnail);
+      }
+    };
     fetchData();
   }, []);
 
@@ -68,62 +85,40 @@ const ProductDetails = () => {
     setMainImage(src);
   };
 
-  const product = {
-    id: 1,
-    name: "Navigator Essential",
-    price: 500,
-    originalPrice: 750,
-    imgSrc: "product1.jpg",
-    smallImages: [
-      "product1.jpg",
-      "product2.jpg",
-      "product3.jpg",
-      "product4.jpg",
-    ],
-    description: `Navigate with Confidence: Trust in the reliability of your compass set to guide you through unfamiliar terrain, providing reassurance and peace of mind along the way. Share the Adventure: Gift this timeless compass set to a fellow explorer or travel enthusiast, inspiring them to embark on their own unforgettable adventures.`,
-    details: {
-      weight: "0.18 Kilograms",
-      brand: "ANTIQUANA",
-      style: "Leather Case",
-      modelName: "ANTIQUANA-80",
-      suggestedUsers: "ANTIQUANA",
-      material: "Brass",
-      feature: "Brass Compass with Leather Case",
-    },
-  };
-
   return (
     <>
       <Navbar />
       <div className="flex flex-col md:flex-row items-start justify-center w-full p-6 text-gray-800 shadow-lg box-border">
         <div className="flex-1 max-w-lg mb-6 md:mb-0 md:mr-6">
           <img
-            src={mainImage}
-            alt={product.name}
+            src={mainImage ? `${imageURI + mainImage}` : ""}
+            alt={productInfo.name}
             className="w-full h-auto rounded-lg"
           />
           <div className="flex mt-4 space-x-2">
-            {/* {product.smallImages.map((src, index) => (
+            {productInfo.images.map((src, index) => (
               <img
                 key={index}
-                src={src}
+                src={`${imageURI + src}`}
                 alt={`Small ${index + 1}`}
                 className="w-16 h-16 rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-200"
                 onClick={() => handleImageClick(src)}
               />
-            ))} */}
+            ))}
           </div>
         </div>
         <div className="flex-2 max-w-2xl bg-white p-6 rounded-lg shadow-md">
-          <h1 className="text-2xl font-semibold mb-4">{product.name}</h1>
+          <h1 className="text-2xl font-semibold mb-4">{productInfo.name}</h1>
           <h2 className="text-xl font-medium mb-2">
-            Price: ${product.price}{" "}
+            Price: ${productInfo.price}{" "}
             <span className="line-through text-gray-500">
-              ${product.originalPrice}
+              ${productInfo.originalPrice}
             </span>
           </h2>
-          <h3 className="text-lg mb-2">Min. Quantity: 10</h3>
-          <p className="mb-4">Dimensions: ‎4.21 x 3.82 x 1.93 inches</p>
+          <h3 className="text-lg mb-2">
+            Min. Quantity: {productInfo.min_order_quantity}
+          </h3>
+          <p className="mb-4">Dimensions: ‎{productInfo.dimensions} inches</p>
           <div className="mb-6">
             <label htmlFor="quantity" className="block mb-2 font-medium">
               Quantity:
@@ -132,19 +127,19 @@ const ProductDetails = () => {
               type="number"
               id="quantity"
               name="quantity"
-              min="10"
+              min={productInfo.min_order_quantity}
               defaultValue="10"
               className="w-20 p-2 border border-gray-300 rounded"
             />
           </div>
           <div className="flex space-x-4 mb-6">
             <button
-              onClick={() => handleAddToCart(product)}
-              disabled={loading === product.id}
+              onClick={() => handleAddToCart(productInfo.product_id)}
+              disabled={loading === productInfo.product_id}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
             >
               <FaCartPlus className="mr-2 text-white" />
-              {loading === product.id ? "Adding..." : "Add to Cart"}
+              {loading === productInfo.product_id ? "Adding..." : "Add to Cart"}
             </button>
             <button
               onClick={() => handleBuyNow(product)}
@@ -188,12 +183,12 @@ const ProductDetails = () => {
             <FaRegCheckCircle className="inline-block ml-2 text-yellow-500" />
           </h4>
           <p className="text-lg text-justify text-gray-700">
-            {product.description}
+            {productInfo.long_description}
           </p>
         </div>
         <div className="flex-1 max-w-lg mb-6 md:mb-0 md:mr-6">
           <img
-            src="product1.jpg"
+            src={`${imageURI + productInfo.description_img1}`}
             alt="Product Description"
             className="w-full h-auto rounded-lg"
           />
@@ -202,7 +197,7 @@ const ProductDetails = () => {
       <div className="flex flex-col md:flex-row items-center justify-center w-full p-6 text-gray-800 box-border">
         <div className="flex-1 max-w-lg mb-6 md:mb-0 md:mr-6">
           <img
-            src="product1.jpg"
+            src={`${imageURI + productInfo.description_img2}`}
             alt="Product Details"
             className="w-full h-auto rounded-lg"
           />
@@ -211,42 +206,42 @@ const ProductDetails = () => {
           <h4 className="text-lg font-semibold mb-4">Product Details</h4>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Weight:</p>
-            <p className="text-base text-gray-700">{product.details.weight}</p>
+            <p className="text-base text-gray-700">{productInfo.weight}</p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Brand:</p>
-            <p className="text-base text-gray-700">{product.details.brand}</p>
+            <p className="text-base text-gray-700">{productInfo.brand}</p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Style:</p>
-            <p className="text-base text-gray-700">{product.details.style}</p>
+            <p className="text-base text-gray-700">{productInfo.style}</p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Model Name:</p>
-            <p className="text-base text-gray-700">
-              {product.details.modelName}
-            </p>
+            <p className="text-base text-gray-700">{productInfo.model_name}</p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Suggested Users:</p>
             <p className="text-base text-gray-700">
-              {product.details.suggestedUsers}
+              {productInfo.suggested_users}
             </p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Material:</p>
             <p className="text-base text-gray-700">
-              {product.details.material}
+              {productInfo.product_material}
             </p>
           </div>
           <div className="border-b border-gray-300 py-2 flex gap-2">
             <p className="text-lg font-medium">Feature:</p>
-            <p className="text-base text-gray-700">{product.details.feature}</p>
+            <p className="text-base text-gray-700">
+              {productInfo.special_features}
+            </p>
           </div>
         </div>
       </div>
 
-      <SimilarProducts />
+      {/* <SimilarProducts /> */}
     </>
   );
 };

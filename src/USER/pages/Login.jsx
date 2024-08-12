@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import GlobalAxios from '../../../Global/GlobalAxios';
+import { login } from '../store/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -19,14 +22,15 @@ const Login = () => {
       email: e.target.email.value,
       password: e.target.password.value,
     };
-    console.log(data);
      try {
       const response  = await GlobalAxios.post('/login',data);
-      console.log(response.data);
-      const { token } = response.data.data;
+      console.log(response.data.data, "Login Response");
+      const token  = response.data.data.token;
+
       if(response.data.status === 'success'){
         setLoading(false);
         Cookies.set('authToken', token , { expires: 1 }); // Set a cookie with a sample token and 1-day expiration
+        dispatch(login());
         navigate('/');
       }
 

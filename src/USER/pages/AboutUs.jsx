@@ -1,39 +1,65 @@
 import React, { useState, useEffect } from 'react';
-
-const products = [
-  {
-    id: 1,
-    name: "Vintage Clock",
-    description: "A beautiful vintage clock from the 19th century, perfect for adding a touch of elegance to any room.",
-    image: "vintage_clock.webp",
-  },
-  {
-    id: 2,
-    name: "Antique Vase",
-    description: "An exquisite antique vase, a true representation of fine craftsmanship and artistic design.",
-    image: "antique_vase.webp",
-  },
-  {
-    id: 3,
-    name: "Classic Painting",
-    description: "A stunning classic painting that captures the essence of historical artistry and aesthetic appeal.",
-    image: "classic_painting.webp",
-  },
-  // Add more products as needed
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductsThunk } from '../store/slices/productsSlice';
+const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
+// const products = [
+//   {
+//     id: 1,
+//     name: "Vintage Clock",
+//     description: "A beautiful vintage clock from the 19th century, perfect for adding a touch of elegance to any room.",
+//     image: "vintage_clock.webp",
+//   },
+//   {
+//     id: 2,
+//     name: "Antique Vase",
+//     description: "An exquisite antique vase, a true representation of fine craftsmanship and artistic design.",
+//     image: "antique_vase.webp",
+//   },
+//   {
+//     id: 3,
+//     name: "Classic Painting",
+//     description: "A stunning classic painting that captures the essence of historical artistry and aesthetic appeal.",
+//     image: "classic_painting.webp",
+//   },
+//   // Add more products as needed
+// ];
 
 const AboutUs = () => {
-  const [randomProduct, setRandomProduct] = useState(null);
-
-  useEffect(() => {
-    const getRandomProduct = () => {
-      const randomIndex = Math.floor(Math.random() * products.length);
-      setRandomProduct(products[randomIndex]);
-    };
-    getRandomProduct();
-  }, []);
-
-  if (!randomProduct) return null;
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.items);
+  const [randomProduct, setRandomProduct] = useState({
+    id: "",
+    name: "",
+    slug: "",
+    thumbnail: "",
+    category_id: "",
+    price: "",
+    status: "",
+    min_order_quantity: "",
+    top_product: "",
+    featured_product: "",
+    best_seller: "",
+    created_at: "",
+    updated_at: "",
+    product_id: "",
+    long_description: "",
+    description_img1: "",
+    description_img2: "",
+    seo_title: "",
+    seo_description: "",
+    weight: "",
+    dimensions: null,
+    brand: "",
+    style: "",
+    model_name: "",
+    suggested_users: "",
+    product_material: "",
+    special_features: null,
+    category_name: "",
+    image_id: "",
+    path: "",
+    images: [],
+  });
 
   return (
     <div className="mx-auto px-4 py-10">
@@ -56,8 +82,8 @@ const AboutUs = () => {
 
       {/* Random Product Section */}
       <div className="w-full flex flex-col lg:flex-row justify-center gap-5 items-center">
-      <div className="lg:w-[350px]">
-          <img src={randomProduct.image} alt={randomProduct.name} className="rounded-lg shadow-lg w-[100%]" />
+      {/* <div className="lg:w-[40vw]">
+          <img src={`${imageURI + randomProduct.thumbnail}`}  className="rounded-lg shadow-lg w-[100%]" />
         </div>
         <div className="lg:w-[40%]">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">{randomProduct.name}</h2>
@@ -65,8 +91,8 @@ const AboutUs = () => {
             {randomProduct.description}
           </p>
         </div>
-        
-      </div>
+        */}
+      </div> 
     </div>
   );
 };

@@ -3,14 +3,11 @@ import { FaHeart, FaUser } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import CartIconWithBadge from './CartIconWithBadge';
 import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
 
 const Navbar = () => {
   const [cartItemCount, setCartItemCount] = useState(0);
-  //  const cartItems = useSelector((state) => state.cart.items);
-  const cartItems = [];
-   useEffect(() => {
-    setCartItemCount(cartItems.length);
-   },[cartItems]);
+  Cookies.set("cartItemCount", cartItemCount);
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 left-0 right-0 z-30">
