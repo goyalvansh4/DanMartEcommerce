@@ -23,7 +23,6 @@ const NewArrival = () => {
     const fetchProducts = async () => {
       try {
         const response = await GlobalAxios.get("/product/new");
-        console.log(response.data.data);
         if (response.data.status === "success") {
           setHomeProducts(response.data.data);
         }

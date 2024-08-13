@@ -18,6 +18,7 @@ import Register from './USER/pages/Register.jsx';
 import ProductView from './USER/pages/ProductView.jsx';
 import ProtectedRoute from './USER/routes/ProtectedRoutes.jsx';  // Import the ProtectedRoute component
 import WishList from './USER/pages/WishList.jsx';
+import ProductCategories from './USER/pages/Categories/ProductCategories.jsx';
 
 const router = createBrowserRouter([
   {
@@ -35,9 +36,7 @@ const router = createBrowserRouter([
       {
         path:"/checkout",
         element: (
-          <ProtectedRoute>
             <CheckOut />
-          </ProtectedRoute>
         ),
       },
       {
@@ -57,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "/products/:id/:slug",
         element: <ProductView />,
+      },
+      {
+        path: "/category/:id/:slug",
+        element: <ProductCategories />,
       },
     ],
   },

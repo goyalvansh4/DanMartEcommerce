@@ -24,7 +24,7 @@ const Login = () => {
     };
      try {
       const response  = await GlobalAxios.post('/login',data);
-      console.log(response.data.data, "Login Response");
+      // console.log(response.data.data, "Login Response");
       const token  = response.data.data.token;
 
       if(response.data.status === 'success'){

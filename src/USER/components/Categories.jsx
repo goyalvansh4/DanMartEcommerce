@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaFilter, FaTags, FaStar, FaTrophy, FaList } from "react-icons/fa";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import { NavLink } from "react-router-dom";
 
 const Categories = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -30,8 +31,8 @@ const Categories = () => {
     const fetchData = async () => {
       try {
         const response = await GlobalAxios.get('/product-categories');
-        console.log(response.data.data);
         if (response.data.status === 'success') {
+          console.log(response.data.data);
           setProductCategory(response.data.data);
         }
       } catch (error) {
@@ -71,12 +72,12 @@ const Categories = () => {
           <ul className="mt-2">
             {category.items.map((item, itemIndex) => (
               <li key={itemIndex}>
-                <a
-                  href="#"
+                <NavLink
+                  to={`/category/${item.id}/${item.slug}`} // Assuming items have a `name` property
                   className="text-gray-500 capitalize hover:text-blue-600 text-[17px] block hover:bg-blue-50 rounded px-4 py-2.5 transition-all"
                 >
                   {item.name || item} {/* Assuming items have a `name` property */}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
