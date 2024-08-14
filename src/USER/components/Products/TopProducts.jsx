@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductsThunk } from '../../store/slices/productsSlice';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { HashLoader, ClipLoader } from 'react-spinners';
+import {  toast } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -11,6 +9,8 @@ import StarRating from '../StarRating';
 import { addCartItem } from '../../store/slices/cartSlice';
 import GlobalAxios from '../../../../Global/GlobalAxios';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { removeWishlistThunk,addWishlistThunk } from '../../store/slices/wishListSlice';
+import { NavLink } from 'react-router-dom';
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -35,6 +35,19 @@ const TopProducts = () => {
     fetchProducts();
   }, [dispatch]);
 
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const response = await GlobalAxios.get('/wishlist');
+        setWishlist(response.data.data.map((item) => item.product_id));
+      } catch (error) {
+        console.error('Failed to fetch wishlist:', error);
+      }
+    };
+    fetchWishlist();
+  }, [dispatch]);
+
   const handleAddToCart = async (id) => {
     setLoadingProductId(id); // Start loading indicator for this product
     const data = {
@@ -45,23 +58,25 @@ const TopProducts = () => {
       const response = await GlobalAxios.post('/cart', data);
       if (response.data.status === 'success') {
         toast.success('Product added to cart');
-        dispatch(addCartItem(data)); // Dispatch the entire product data, not just the ID
+        dispatch(addCartItem(id)); // Dispatch the entire product data, not just the ID
       }
     } catch (error) {
-      toast.error('Failed to add product to cart');
+      // toast.error('Failed to add product to cart');
       console.error('Add to Cart Error:', error);
     } finally {
       setLoadingProductId(null); // Stop loading indicator
     }
   };
 
-  const handleWishlistToggle = (product) => {
-    if (wishlist.includes(product.product_id)) {
-      setWishlist(wishlist.filter((id) => id !== product.product_id)); // Remove from wishlist
-      toast.info(`${product.name} removed from wishlist`);
+  const handleWishlistToggle = (p_id) => {
+    if (wishlist.includes(p_id)) {
+      setWishlist(wishlist.filter((id) => id !== p_id)); 
+      dispatch(removeWishlistThunk(p_id))// Remove from wishlist
+      toast.info(`Product removed from wishlist`);
     } else {
-      setWishlist([...wishlist, product.product_id]); // Add to wishlist
-      toast.success(`${product.name} added to wishlist`);
+      setWishlist([...wishlist, p_id]); // Add to wishlist
+      dispatch(addWishlistThunk(p_id))// Add to wishlist
+      toast.success(`Product added to wishlist`);
     }
   };
 
@@ -109,9 +124,10 @@ const TopProducts = () => {
             key={product.product_id}
             className="product-card rounded-xl relative overflow-hidden p-4 shadow-lg"
           >
+            
             <div
               className="wishlist-icon bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full absolute top-4 right-4 z-10 cursor-pointer"
-              onClick={() => handleWishlistToggle(product)}
+              onClick={() => handleWishlistToggle(product.product_id)}
             >
               {wishlist.includes(product.product_id) ? (
                 <AiFillHeart size={24} className="text-red-500" />
@@ -119,6 +135,8 @@ const TopProducts = () => {
                 <AiOutlineHeart size={24} className="text-gray-400" />
               )}
             </div>
+            <NavLink to={`/products/${product.product_id}/${product.
+            products_slug}`}>
             <div className="product-image flex justify-center w-full overflow-hidden mx-auto mb-4">
               <img
                 src={`${imageURI + product.thumbnail}`}
@@ -126,6 +144,7 @@ const TopProducts = () => {
                 className="w-full h-64 object-cover object-center rounded-xl"
               />
             </div>
+            </NavLink>
             <div className="product-info text-center rounded-b-xl">
               <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
               <h4 className="text-lg text-gray-800 font-bold mt-2">
@@ -163,7 +182,6 @@ const TopProducts = () => {
           </div>
         ))}
       </Slider>
-      <ToastContainer />
     </div>
   );
 };

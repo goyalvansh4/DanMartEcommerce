@@ -19,6 +19,7 @@ import ProductView from './USER/pages/ProductView.jsx';
 import ProtectedRoute from './USER/routes/ProtectedRoutes.jsx';  // Import the ProtectedRoute component
 import WishList from './USER/pages/WishList.jsx';
 import ProductCategories from './USER/pages/Categories/ProductCategories.jsx';
+import CategoriesPage from './USER/pages/CategoriesPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/category/:id/:slug",
-        element: <ProductCategories />,
+        element: <CategoriesPage />,
       },
     ],
   },

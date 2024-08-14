@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProductsThunk } from "../../store/slices/productsSlice";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -11,11 +9,14 @@ import { HashLoader } from "react-spinners";
 import StarRating from "../StarRating";
 import GlobalAxios from "../../../../Global/GlobalAxios";
 import { addCartItem } from "../../store/slices/cartSlice";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { NavLink } from "react-router-dom";
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const NewArrival = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [wishlist, setWishlist] = useState([]);
   const [loadingProductId, setLoadingProductId] = useState(null);
   const [homeProducts, setHomeProducts] = useState([]);
 
@@ -33,9 +34,21 @@ const NewArrival = () => {
     fetchProducts();
   }, [dispatch]);
 
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const response = await GlobalAxios.get('/wishlist');
+        setWishlist(response.data.data.map((item) => item.product_id));
+      } catch (error) {
+        console.error('Failed to fetch wishlist:', error);
+      }
+    };
+    fetchWishlist();
+  }, [dispatch]);
+
   const handleAddToCart = async (id) => {
     setLoadingProductId(id); // Set the loading state for this product
-    console.log(id);
     const data = {
       product_id: id,
       quantity: 1,
@@ -49,9 +62,23 @@ const NewArrival = () => {
       }
     } catch (error) {
       console.error("Add to Cart Error", error);
-      toast.error("Failed to add product to cart");
+      // toast.error("Failed to add product to cart");
     } finally {
       setLoadingProductId(null); // Reset the loading state
+    }
+  };
+
+
+
+  const handleWishlistToggle = (p_id) => {
+    if (wishlist.includes(p_id)) {
+      setWishlist(wishlist.filter((id) => id !== p_id)); 
+      dispatch(removeWishlistThunk(p_id))// Remove from wishlist
+      toast.info(`Product removed from wishlist`);
+    } else {
+      setWishlist([...wishlist, p_id]); // Add to wishlist
+      dispatch(addWishlistThunk(p_id))// Add to wishlist
+      toast.success(`Product added to wishlist`);
     }
   };
 
@@ -110,19 +137,19 @@ const NewArrival = () => {
             key={product.product_id}
             className="product-card  rounded-xl relative overflow-hidden p-4 shadow-lg"
           >
-            <div className="wishlist-icon bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full absolute top-4 right-4 z-10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16px"
-                className="fill-gray-800 inline-block"
-                viewBox="0 0 64 64"
-              >
-                <path
-                  d="M45.5 4A18.53 18.53 0 0 0 32 9.86 18.5 18.5 0 0 0 0 22.5C0 40.92 29.71 59 31 59.71a2 2 0 0 0 2.06 0C34.29 59 64 40.92 64 22.5A18.52 18.52 0 0 0 45.5 4ZM32 55.64C26.83 52.34 4 36.92 4 22.5a14.5 14.5 0 0 1 26.36-8.33 2 2 0 0 0 3.27 0A14.5 14.5 0 0 1 60 22.5c0 14.41-22.83 29.83-28 33.14Z"
-                  data-original="#000000"
-                ></path>
-              </svg>
+           
+            <div
+              className="wishlist-icon bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full absolute top-4 right-4 z-10 cursor-pointer"
+              onClick={() => handleWishlistToggle(product.product_id)}
+            >
+              {wishlist.includes(product.product_id) ? (
+                <AiFillHeart size={24} className="text-red-500" />
+              ) : (
+                <AiOutlineHeart size={24} className="text-gray-400" />
+              )}
             </div>
+            <NavLink  to={`/products/${product.product_id}/${product.
+            products_slug}`}>
             <div className="product-image w-full overflow-hidden mx-auto mb-4">
               <img
                 src={`${imageURI + product.thumbnail}`}
@@ -130,6 +157,7 @@ const NewArrival = () => {
                 className="w-full h-64 object-cover object-center rounded-xl"
               />
             </div>
+            </NavLink>
             <div className="product-info text-center bg-gray-100 p-6 rounded-b-xl">
               <h3 className="text-lg font-bold text-gray-800">
                 {product.name}

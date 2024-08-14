@@ -7,6 +7,8 @@ import TopProducts from '../components/Products/TopProducts';
 import Navbar from '../components/NavBar/NavBar';
 import NewArrival from '../components/Products/NewArrival';
 import ProductView from './ProductView';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Main = () => {
   return (
@@ -20,6 +22,7 @@ const Main = () => {
       <Banner2 src="banner2.jpg" title="New Arrival Product" />
       <NewArrival />
       {/* <ProductView /> */}
+      <ToastContainer />
     </>
   )
 }

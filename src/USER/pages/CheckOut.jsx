@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaCreditCard, FaPaypal, FaMoneyBillWave } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
+const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
+import GlobalAxios from "../../../Global/GlobalAxios";
 
 const CheckOut = () => {
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [cartData, setCartData] = useState([]);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      const response = await GlobalAxios.get("/cart");
+      setCartData(response.data.data.carts);
+      setTotalPrice(Number(response.data.data.total_price));
+      setTotalQuantity((response.data.data.carts.reduce((acc, item) => acc + item.quantity, 0))); 
+    };
+    fetchCartItems();
+  }, []);
+
   return (
     <div className="my-10 bg-white p-4">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -93,22 +109,39 @@ const CheckOut = () => {
           <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">
             Payment Details
           </h3>
-          <div className="bg-gray-100 p-6 rounded-md shadow-sm">
-            <div className="grid gap-4">
-              <div className="flex justify-between">
-                <span className="text-gray-700">Price</span>
-                <span className="font-semibold text-gray-800">$120.00</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Quantity</span>
-                <span className="font-semibold text-gray-800">2</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-700">Total</span>
-                <span className="font-semibold text-gray-800">$240.00</span>
-              </div>
-            </div>
-
+          <div className="flex flex-col gap-4 bg-gray-100 p-6 rounded-md shadow-sm">
+            {cartData.map((item) => {
+              return (
+                <div key={item.product_id} className="flex  items-center gap-4">
+                  <div className="w-24 h-24 bg-white p-2 rounded-md">
+                    <img
+                      src={`${imageURI + item.thumbnail}`}
+                      className="w-full h-full object-contain"
+                      alt={item.name}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-gray-800">
+                      {item.name}
+                    </h3>
+                    <div className="text-sm text-gray-600">
+                      Quantity: {item.quantity}
+                    </div>
+                    <h4 className="text-base font-bold text-gray-800">
+                      Item Price:${item.price}
+                    </h4>
+                    <h4 className="text-base font-bold text-gray-800">
+                      Total:${item.total}
+                    </h4>
+                  </div>
+                </div>
+              );
+            })}
+            <hr className="border-gray-300 my-1" />
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">Order Details</h3>
+            <div className="text-lg font-normal">Total Amount: ${totalPrice}</div>
+            <div className="text-lg font-normal">Total Quantity: {totalQuantity}</div>
+            <hr className="border-gray-300 my-1" />
             <div className="mt-6">
               <h4 className="text-lg font-semibold text-gray-800">
                 Payment Method
