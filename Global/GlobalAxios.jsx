@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie"; // Make sure you have this package installed
-const apiUrl = "http://192.168.192.152:8000/api/v1/user";
+const apiUrl = "http://192.168.123.152:8000/api/v1/user";
 
 const GlobalAxios = axios.create({
   baseURL: apiUrl,

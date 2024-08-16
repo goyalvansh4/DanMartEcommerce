@@ -9,6 +9,7 @@ import StarRating from "../../components/StarRating";
 import GlobalAxios from "../../../../Global/GlobalAxios";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FaShoppingCart } from "react-icons/fa";
+import { addWishlistThunk, removeWishlistThunk } from "../../store/slices/wishListSlice";
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -28,6 +29,7 @@ const ProductCategories = () => {
           `/products?category=${id}&slug=${slug}`
         );
         if (response.data.status === "success") {
+          console.log(response.data.data); 
           setItems(response.data.data);
         }
       } catch (error) {

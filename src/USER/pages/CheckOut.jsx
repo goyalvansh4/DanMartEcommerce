@@ -9,16 +9,57 @@ const CheckOut = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [cartData, setCartData] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address_lane1: "",
+    address_lane2: "",
+    city: "",
+    state: "",
+    country: "",
+    postal_code: "",
+  });
 
   useEffect(() => {
     const fetchCartItems = async () => {
       const response = await GlobalAxios.get("/cart");
       setCartData(response.data.data.carts);
       setTotalPrice(Number(response.data.data.total_price));
-      setTotalQuantity((response.data.data.carts.reduce((acc, item) => acc + item.quantity, 0))); 
+      setTotalQuantity(
+        response.data.data.carts.reduce((acc, item) => acc + item.quantity, 0)
+      );
     };
     fetchCartItems();
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form data:", formData);
+    try {
+      const response = await GlobalAxios.post("/order", formData);
+
+      if (response.data.status === "success") {
+        if (response.data.payment_link) {
+          window.location.href = response.data.payment_link;
+        }
+      } else {
+        console.log("Order not submitted successfully:");
+      }
+
+      console.log("Order submitted successfully:", response.data);
+    } catch (error) {
+      console.error("Error submitting order:", error);
+    }
+  };
 
   return (
     <div className="my-10 bg-white p-4">
@@ -35,69 +76,94 @@ const CheckOut = () => {
                 <MdOutlineLocationOn className="text-blue-600" />
                 Personal Details
               </h3>
-              <form className="grid gap-4 mt-4">
+              <form className="grid gap-4 mt-4" onSubmit={handleSubmit}>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <input
                     type="text"
+                    name="name"
                     placeholder="Full name"
+                    value={formData.name}
+                    onChange={handleChange}
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                   <input
                     type="email"
+                    name="email"
                     placeholder="Email address"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                 </div>
                 <input
                   type="tel"
+                  name="phone"
                   placeholder="Phone number"
+                  value={formData.phone}
+                  onChange={handleChange}
                   className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                 />
-              </form>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                <MdOutlineLocationOn className="text-blue-600" />
-                Shipping Address
-              </h3>
-              <form className="grid gap-4 mt-4">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2 mt-6">
+                  <MdOutlineLocationOn className="text-blue-600" />
+                  Shipping Address
+                </h3>
                 <input
                   type="text"
+                  name="address_lane1"
                   placeholder="Address Lane 1"
+                  value={formData.address_lane1}
+                  onChange={handleChange}
                   className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                 />
                 <input
                   type="text"
+                  name="address_lane2"
                   placeholder="Address Lane 2"
+                  value={formData.address_lane2}
+                  onChange={handleChange}
                   className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                 />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <input
                     type="text"
+                    name="city"
                     placeholder="City"
+                    value={formData.city}
+                    onChange={handleChange}
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                   <input
                     type="text"
+                    name="state"
                     placeholder="State"
+                    value={formData.state}
+                    onChange={handleChange}
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <input
                     type="text"
+                    name="postal_code"
                     placeholder="Postal Code"
+                    value={formData.postal_code}
+                    onChange={handleChange}
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                   <input
                     type="text"
+                    name="country"
                     placeholder="Country"
+                    value={formData.country}
+                    onChange={handleChange}
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                 </div>
-                <button className="px-6 py-3 bg-blue-600 text-white rounded-md mt-4 hover:bg-blue-700">
-                  Save Address
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-md mt-4 hover:bg-blue-700"
+                >
+                  Place Order
                 </button>
               </form>
             </div>
@@ -110,99 +176,40 @@ const CheckOut = () => {
             Payment Details
           </h3>
           <div className="flex flex-col gap-4 bg-gray-100 p-6 rounded-md shadow-sm">
-            {cartData.map((item) => {
-              return (
-                <div key={item.product_id} className="flex  items-center gap-4">
-                  <div className="w-24 h-24 bg-white p-2 rounded-md">
-                    <img
-                      src={`${imageURI + item.thumbnail}`}
-                      className="w-full h-full object-contain"
-                      alt={item.name}
-                    />
+            {cartData.map((item) => (
+              <div key={item.product_id} className="flex items-center gap-4">
+                <div className="w-24 h-24 bg-white p-2 rounded-md">
+                  <img
+                    src={`${imageURI + item.thumbnail}`}
+                    className="w-full h-full object-contain"
+                    alt={item.name}
+                  />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-gray-800">
+                    {item.name}
+                  </h3>
+                  <div className="text-sm text-gray-600">
+                    Quantity: {item.quantity}
                   </div>
-                  <div>
-                    <h3 className="text-base font-bold text-gray-800">
-                      {item.name}
-                    </h3>
-                    <div className="text-sm text-gray-600">
-                      Quantity: {item.quantity}
-                    </div>
-                    <h4 className="text-base font-bold text-gray-800">
-                      Item Price:${item.price}
-                    </h4>
-                    <h4 className="text-base font-bold text-gray-800">
-                      Total:${item.total}
-                    </h4>
-                  </div>
-                </div>
-              );
-            })}
-            <hr className="border-gray-300 my-1" />
-            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">Order Details</h3>
-            <div className="text-lg font-normal">Total Amount: ${totalPrice}</div>
-            <div className="text-lg font-normal">Total Quantity: {totalQuantity}</div>
-            <hr className="border-gray-300 my-1" />
-            <div className="mt-6">
-              <h4 className="text-lg font-semibold text-gray-800">
-                Payment Method
-              </h4>
-              <div className="mt-4 grid gap-4">
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="cod"
-                    name="payment"
-                    className="w-5 h-5 text-blue-600 cursor-pointer"
-                  />
-                  <label
-                    htmlFor="cod"
-                    className="ml-4 text-gray-700 flex items-center gap-2 cursor-pointer"
-                  >
-                    <FaMoneyBillWave className="text-blue-600" />
-                    Cash on Delivery (COD)
-                  </label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="credit-card"
-                    name="payment"
-                    className="w-5 h-5 text-blue-600 cursor-pointer"
-                    defaultChecked
-                  />
-                  <label
-                    htmlFor="credit-card"
-                    className="ml-4 text-gray-700 flex items-center gap-2 cursor-pointer"
-                  >
-                    <FaCreditCard className="text-blue-600" />
-                    Credit/Debit Card
-                  </label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="upi"
-                    name="payment"
-                    className="w-5 h-5 text-blue-600 cursor-pointer"
-                  />
-                  <label
-                    htmlFor="upi"
-                    className="ml-4 text-gray-700 flex items-center gap-2 cursor-pointer"
-                  >
-                    <FaPaypal className="text-blue-600" />
-                    UPI Payment
-                  </label>
+                  <h4 className="text-base font-bold text-gray-800">
+                    Item Price:${item.price}
+                  </h4>
+                  <h4 className="text-base font-bold text-gray-800">
+                    Total:${item.total}
+                  </h4>
                 </div>
               </div>
+            ))}
+            <hr className="border-gray-300 my-1" />
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center md:text-left">
+              Order Details
+            </h3>
+            <div className="text-lg font-normal">
+              Total Amount: ${totalPrice}
             </div>
-
-            <div className="flex justify-end gap-4 mt-8">
-              <button
-                type="button"
-                className="px-6 py-3 text-sm font-semibold tracking-wide bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Pay now
-              </button>
+            <div className="text-lg font-normal">
+              Total Quantity: {totalQuantity}
             </div>
           </div>
         </div>
