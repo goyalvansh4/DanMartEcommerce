@@ -32,7 +32,7 @@ const Categories = () => {
       try {
         const response = await GlobalAxios.get('/product-categories');
         if (response.data.status === 'success') {
-          console.log(response.data.data);
+          // console.log(response.data.data);
           setProductCategory(response.data.data);
         }
       } catch (error) {
@@ -53,7 +53,9 @@ const Categories = () => {
   const categories = [
     { title: "All", icon: <FaList />, items: [] },
     { title: "Categories", icon: <FaTags />, items: productCategory },
-    { title: "Products", icon: <FaStar />, items: ["Top Product","Feature Product","Best Seller"] },
+    { title: "Products", icon: <FaStar />, 
+      items: ["Top Products","Feature Products"],
+    },
   ];
 
   return (
@@ -73,7 +75,7 @@ const Categories = () => {
             {category.items.map((item, itemIndex) => (
               <li key={itemIndex}>
                 <NavLink
-                  to={`/category/${item.id}/${item.slug}`} // Assuming items have a `name` property
+                  to={(category.title === "Categories") ? `/category/${item.id}/${item.slug}` : `/${item.split(' ')[0].toLowerCase()}-products`} // Assuming items have a `name` property
                   className="text-gray-500 capitalize hover:text-blue-600 text-[17px] block hover:bg-blue-50 rounded px-4 py-2.5 transition-all"
                 >
                   {item.name || item} {/* Assuming items have a `name` property */}

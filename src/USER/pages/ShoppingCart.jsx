@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchCartItems, removeCartItem } from "../store/slices/cartSlice";
+import { fetchCartItems, removeCart, removeCartItem } from "../store/slices/cartSlice";
 import GlobalAxios from "../../../Global/GlobalAxios";
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -17,6 +17,11 @@ const ShoppingCart = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const [isLoading, setIsLoading] = useState(true);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [amountData, setAmountData] = useState({
+    shipping_fee: 0,
+    platform_fee: 0,
+    discount: 0,
+  });
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -42,7 +47,7 @@ const ShoppingCart = () => {
       }
     };
     fetchCartData();
-  }, [dispatch]);
+  }, [dispatch, cartItems.length, cartItems]);
 
   const handleCheckout = () => {
     navigate("/checkout");
@@ -50,8 +55,12 @@ const ShoppingCart = () => {
 
   const handleRemove = async (id) => {
     try {
-      dispatch(removeCartItem(id));
+      const res =dispatch(removeCartItem(id));
+      res.then((res) => res)
+      .then((data)=> console.log(data));
+      dispatch(removeCart(id));
       setCartData(cartData.filter((item) => item.product_id !== id));
+      // setTotalPrice(Number(response.data.data.total_price));
       toast.info("Item removed from cart");
     } catch (error) {
       console.error("Failed to remove item from cart", error);
@@ -72,7 +81,7 @@ const ShoppingCart = () => {
     );
   }
 
-  if (isEmpty) {
+  if (cartData.length === 0 || isEmpty) {
     return (
       <div className="my-10 md:max-w-5xl mx-auto bg-white py-8 px-4 text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">
@@ -167,19 +176,19 @@ const ShoppingCart = () => {
             </li>
             <li className="flex justify-between">
               <span>Shipping Fee</span>
-              <span className="font-bold">$2.00</span>
+              <span className="font-bold">${amountData.shipping_fee}</span>
             </li>
             <li className="flex justify-between">
               <span>Platform Fee</span>
-              <span className="font-bold">$4.00</span>
+              <span className="font-bold">${amountData.platform_fee}</span>
             </li>
             <li className="flex justify-between">
               <span>Discount</span>
-              <span className="font-bold">-$0.00</span>
+              <span className="font-bold">-${amountData.discount}</span>
             </li>
             <li className="flex justify-between text-lg font-bold">
               <span>Total Amount</span>
-              <span>${totalPrice + 2 + 4}</span>
+              <span>${(totalPrice + amountData.shipping_fee + amountData.platform_fee)-(amountData.discount)}</span>
             </li>
           </ul>
 

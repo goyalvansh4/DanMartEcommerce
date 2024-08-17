@@ -74,12 +74,16 @@ const WishList = () => {
   }
 
   return (
-    <div className="container mx-auto py-12 px-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">My Wishlist</h1>
+    <div className="container mx-auto py-12 px-4 md:px-6 lg:px-8">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+        My Wishlist
+      </h1>
       {items.length === 0 ? (
-        <p className="text-xl text-gray-600">Your wishlist is empty.</p>
+        <p className="text-xl text-gray-600 text-center">
+          Your wishlist is empty.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {items.map((item) => (
             <div
               key={item.product_id}
@@ -98,19 +102,19 @@ const WishList = () => {
                 <img
                   src={`${imageURI + item.thumbnail}`}
                   alt={item.name}
-                  className="w-full  object-cover rounded-lg"
+                  className="w-full h-52 object-cover rounded-lg"
                 />
               </NavLink>
               <div className="text-center">
-                <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
+                <h3 className="text-lg font-bold text-gray-800 line-clamp-1">{item.product_name}</h3>
                 <p className="text-lg font-semibold text-gray-800 mt-2">
                   ${item.price}{" "}
                   <span className="text-gray-400 ml-2 line-through">
                     ${item.originalPrice}
                   </span>
                 </p>
-                <div className="flex justify-center items-center">
-                <StarRating rating={4} className="mt-2" />
+                <div className="flex justify-center items-center mt-2">
+                  <StarRating rating={4} />
                 </div>
                 <button
                   type="button"

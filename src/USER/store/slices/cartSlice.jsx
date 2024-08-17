@@ -6,9 +6,9 @@ export const fetchCartItems = createAsyncThunk(
   'cart/fetchCartItems',
   async () => {
     const response = await GlobalAxios.get('/cart');
-    return response.data.data;
+    return response.data.data.carts || []; // Ensure it returns an array
   }
-);  
+);
 
 // Remove cart item from the backend and state
 export const removeCartItem = createAsyncThunk(
@@ -16,7 +16,7 @@ export const removeCartItem = createAsyncThunk(
   async (itemId, { rejectWithValue }) => {
     try {
       const response = await GlobalAxios.delete(`/cart/${itemId}`);
-      return itemId; // Returning the id so we can remove it from the state
+      return response.data; // Returning the id so we can remove it from the state
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -34,6 +34,9 @@ const cartSlice = createSlice({
     addCartItem: (state, action) => {
       state.items.push(action.payload);
     },
+    removeCart: (state, action) => {
+      state.items = state.items.filter((item) => item.id !== action.payload);
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -58,5 +61,5 @@ const cartSlice = createSlice({
   }
 });
 
-export const { addCartItem } = cartSlice.actions;
+export const { addCartItem,removeCart } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -18,6 +18,10 @@ import WishList from "./USER/pages/WishList.jsx";
 import ProductCategories from "./USER/pages/Categories/ProductCategories.jsx";
 import CategoriesPage from "./USER/pages/CategoriesPage.jsx";
 import Thanks from "./USER/pages/Thanks.jsx";
+import TopProducts from "./USER/pages/Products/TopProducts.jsx";
+import FeatureProducts from "./USER/pages/Products/FeatureProducts.jsx";
+import OrderHistory from "./USER/pages/Orders/OrderHistory.jsx";
+import PaymentCancel from "./USER/pages/PaymentCancel.jsx";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +60,18 @@ const router = createBrowserRouter([
         path: "/category/:id/:slug",
         element: <CategoriesPage />,
       },
+      {
+        path: "/top-products",
+        element: <TopProducts />,
+      },
+      {
+        path: "/feature-products",
+        element: <FeatureProducts />,
+      },
+      {
+        path: "/orders",
+        element: <OrderHistory />,
+      },
     ],
   },
   {
@@ -70,6 +86,10 @@ const router = createBrowserRouter([
     path: "/thanks",
     element: <Thanks />,
   },
+  {
+    path:"/cancel",
+    element: <PaymentCancel />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

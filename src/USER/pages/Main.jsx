@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Banner from '../components/Banner';
 import ImageWrapper from '../components/ImageWrapper';
 import Home from '../components/Home';
@@ -11,9 +11,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Main = () => {
+  useEffect(() => {
+    document.title = "DanMart"
+  }, [])
   return (
     <>
-     <Navbar />
      <Banner />
      <ImageWrapper />
       <Home />

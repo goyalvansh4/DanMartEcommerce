@@ -9,7 +9,10 @@ import StarRating from "../../components/StarRating";
 import GlobalAxios from "../../../../Global/GlobalAxios";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FaShoppingCart } from "react-icons/fa";
-import { addWishlistThunk, removeWishlistThunk } from "../../store/slices/wishListSlice";
+import {
+  addWishlistThunk,
+  removeWishlistThunk,
+} from "../../store/slices/wishListSlice";
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -23,13 +26,14 @@ const ProductCategories = () => {
   const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
         const response = await GlobalAxios.get(
-          `/products?category=${id}&slug=${slug}`
+          `/product-categories/${id}/${slug}`
         );
         if (response.data.status === "success") {
-          console.log(response.data.data); 
+          console.log(response.data.data);
           setItems(response.data.data);
         }
       } catch (error) {
@@ -37,9 +41,9 @@ const ProductCategories = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [id, slug]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchWishlist = async () => {
       try {
         const response = await GlobalAxios.get("/wishlist");
@@ -49,7 +53,7 @@ const ProductCategories = () => {
       }
     };
     fetchWishlist();
-  },[])
+  }, []);
 
   const handleAddToCart = async (id) => {
     setLoadingProductId(id);
@@ -95,11 +99,11 @@ const ProductCategories = () => {
   return (
     <div className="font-[sans-serif] py-4 mx-auto lg:max-w-6xl max-w-lg md:max-w-full">
       <ToastContainer />
-      <div className="flex justify-between p-5">
+      <div className="flex flex-col lg:flex-row justify-between p-5">
         <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
           Our Products
         </h2>
-        <button className="bg-black uppercase text-[12px] font-light text-white rounded-md px-3 py-0">
+        <button className="bg-black uppercase text-[12px] font-light text-white rounded-md px-3 py-2 w-[150px] lg:w-[10%]">
           Add catalog
         </button>
       </div>
@@ -155,8 +159,9 @@ const ProductCategories = () => {
                   <ClipLoader size={20} color="#fff" />
                 ) : (
                   <span className="flex items-center gap-2 justify-center">
-                  <FaShoppingCart size={20} className="text-black" />
-                   Add to Cart</span>
+                    <FaShoppingCart size={20} className="text-black" />
+                    Add to Cart
+                  </span>
                 )}
               </button>
             </div>

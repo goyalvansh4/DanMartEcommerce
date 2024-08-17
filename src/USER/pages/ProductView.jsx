@@ -67,16 +67,24 @@ const ProductDetails = () => {
     fetchData();
   }, []);
 
-  const handleAddToCart = (product) => {
-    setLoading(product.id);
-    setTimeout(() => {
-      // dispatch(addItem(product));
-      toast.success(`${product.name} added to cart!`);
-      setLoading(null);
-    }, 1000);
+  const handleAddToCart = async(id) => {
+    try {
+      const response = await GlobalAxios.post("/cart", {
+        product_id: id,
+        quantity: 1,
+      });
+      if (response.data.status === "success") {
+        toast.success("Product added to cart successfully.");
+        dispatch(addCartItem(id));
+      }
+    } catch (error) {
+      // toast.error("Failed to add product to cart. Please try again.");
+    } finally {
+      setLoadingProductId(null);
+    }
   };
 
-  const handleBuyNow = (product) => {
+  const handleBuyNow = (id) => {
     // Placeholder for Buy Now functionality
     toast.success(`Proceeding to buy ${product.name}!`);
   };
@@ -108,7 +116,7 @@ const ProductDetails = () => {
           </div>
         </div>
         <div className="flex-2 max-w-2xl bg-white p-6 rounded-lg shadow-md">
-          <h1 className="text-2xl font-semibold mb-4">{productInfo.name}</h1>
+          <h1 className="text-2xl font-semibold mb-4">{productInfo.product_name}</h1>
           <h2 className="text-xl font-medium mb-2">
             Price: ${productInfo.price}{" "}
             <span className="line-through text-gray-500">
@@ -142,7 +150,7 @@ const ProductDetails = () => {
               {loading === productInfo.product_id ? "Adding..." : "Add to Cart"}
             </button>
             <button
-              onClick={() => handleBuyNow(product)}
+              onClick={() => handleBuyNow(product.product_id)}
               className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded inline-flex items-center"
             >
               <FaCartPlus className="mr-2 text-white" />
@@ -241,7 +249,7 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* <SimilarProducts /> */}
+      <SimilarProducts />
     </>
   );
 };

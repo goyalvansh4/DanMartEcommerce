@@ -26,20 +26,22 @@ body {
   background-color: #f3f3f3;
 }
 
-.products {
-  background-color: #ffffff;
-}
-
-.products .product {
+.product-card {
+  width: 100%;
+  max-width: 300px; /* Adjust based on your design */
   border: 1px solid #ddd;
-  padding: 16px;
   border-radius: 8px;
-  transition: box-shadow 0.3s;
+  overflow: hidden;
+  background-color: #fff;
+  text-align: center;
 }
 
-.products .product:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.product-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover; /* Ensures image covers the area without stretching */
 }
+
 
 
 .slider-custom {

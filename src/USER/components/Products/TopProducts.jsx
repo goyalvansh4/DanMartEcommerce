@@ -135,18 +135,17 @@ const TopProducts = () => {
                 <AiOutlineHeart size={24} className="text-gray-400" />
               )}
             </div>
-            <NavLink to={`/products/${product.product_id}/${product.
-            products_slug}`}>
+            <NavLink to={`/products/${product.product_id}/${product.products_slug}`}>
             <div className="product-image flex justify-center w-full overflow-hidden mx-auto mb-4">
               <img
                 src={`${imageURI + product.thumbnail}`}
-                alt={product.name}
+                alt={product.product_name}
                 className="w-full h-64 object-cover object-center rounded-xl"
               />
             </div>
             </NavLink>
             <div className="product-info text-center rounded-b-xl">
-              <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
+              <h3 className="text-lg font-bold text-gray-800 line-clamp-1">{product.product_name}</h3>
               <h4 className="text-lg text-gray-800 font-bold mt-2">
                 ${product.price}{' '}
                 <strike className="text-gray-400 ml-2 font-medium">${product.originalPrice}</strike>
