@@ -77,6 +77,15 @@ const OrderHistory = () => {
     fetchOrderHistory();
   }, []);
 
+  const handleCancelOrder = async () => {
+    try {
+      const response = await GlobalAxios.get("/test");
+      console.log(response.data);
+    } catch (error) {
+      
+    }
+  }
+
   return (
     <div className="my-10 bg-white p-4">
       <div className="max-w-6xl mx-auto">
@@ -109,7 +118,9 @@ const OrderHistory = () => {
                     <AiOutlineEye />
                     View Details
                   </button>
-                  <button className="flex items-center gap-2 text-red-600 hover:text-red-700">
+                  <button
+                  onClick={handleCancelOrder}
+                   className="flex items-center gap-2 text-red-600 hover:text-red-700">
                     <MdOutlineCancel />
                     Cancel Order
                   </button>

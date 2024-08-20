@@ -20,7 +20,7 @@ const ProductCategories = () => {
   const dispatch = useDispatch();
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(true); // Initialize loading to true
   const [loadingProductId, setLoadingProductId] = useState(null);
   const { id, slug } = useParams();
   const [wishlist, setWishlist] = useState([]);
@@ -28,6 +28,7 @@ const ProductCategories = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
+      setLoading(true); // Start loading animation
       try {
         const response = await GlobalAxios.get(
           `/product-categories/${id}/${slug}`
@@ -38,6 +39,9 @@ const ProductCategories = () => {
         }
       } catch (error) {
         console.error(error);
+        setError("Failed to fetch products.");
+      } finally {
+        setLoading(false); // Stop loading animation
       }
     };
     fetchData();
@@ -67,7 +71,7 @@ const ProductCategories = () => {
         dispatch(addCartItem(id));
       }
     } catch (error) {
-      // toast.error("Failed to add product to cart. Please try again.");
+      toast.error("Failed to add product to cart. Please try again.");
     } finally {
       setLoadingProductId(null);
     }
@@ -87,7 +91,7 @@ const ProductCategories = () => {
 
   if (loading) {
     return (
-      <div className="text-center flex flex-col items-center justify-center">
+      <div className="text-center flex flex-col items-center justify-center h-screen">
         <ClipLoader size={50} color={"#123abc"} />
         <p className="text-black text-lg">Loading... Please Wait</p>
       </div>
@@ -171,5 +175,4 @@ const ProductCategories = () => {
     </div>
   );
 };
-
 export default ProductCategories;

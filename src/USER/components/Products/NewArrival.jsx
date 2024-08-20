@@ -15,7 +15,7 @@ const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const NewArrival = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Loading state starts as true
   const [wishlist, setWishlist] = useState([]);
   const [loadingProductId, setLoadingProductId] = useState(null);
   const [homeProducts, setHomeProducts] = useState([]);
@@ -29,19 +29,20 @@ const NewArrival = () => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false); // Set loading to false once products are fetched
       }
     };
     fetchProducts();
   }, [dispatch]);
 
-
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const response = await GlobalAxios.get('/wishlist');
+        const response = await GlobalAxios.get("/wishlist");
         setWishlist(response.data.data.map((item) => item.product_id));
       } catch (error) {
-        console.error('Failed to fetch wishlist:', error);
+        console.error("Failed to fetch wishlist:", error);
       }
     };
     fetchWishlist();
@@ -68,16 +69,12 @@ const NewArrival = () => {
     }
   };
 
-
-
   const handleWishlistToggle = (p_id) => {
     if (wishlist.includes(p_id)) {
-      setWishlist(wishlist.filter((id) => id !== p_id)); 
-      dispatch(removeWishlistThunk(p_id))// Remove from wishlist
+      setWishlist(wishlist.filter((id) => id !== p_id)); // Remove from wishlist
       toast.info(`Product removed from wishlist`);
     } else {
       setWishlist([...wishlist, p_id]); // Add to wishlist
-      dispatch(addWishlistThunk(p_id))// Add to wishlist
       toast.success(`Product added to wishlist`);
     }
   };
@@ -115,13 +112,15 @@ const NewArrival = () => {
     ],
   };
 
-  if (loading)
+  // Show loading spinner until products are fetched
+  if (loading) {
     return (
-      <div className="text-center py-4 flex flex-col items-center justify-center">
-        <HashLoader size={50} color={"#123abc"} />
-        <p className="text-black text-lg">Loading... Please Wait</p>
+      <div className="flex justify-center items-center min-h-screen">
+        <ClipLoader size={50} color={"#123abc"} />
+        <p className="text-gray-800 text-lg ml-4">Loading... Please Wait</p>
       </div>
     );
+  }
 
   return (
     <div className="my-5 font-sans py-5 w-11/12 mx-auto ">
@@ -135,9 +134,8 @@ const NewArrival = () => {
         {homeProducts.map((product) => (
           <div
             key={product.product_id}
-            className="product-card  rounded-xl relative overflow-hidden p-4 shadow-lg"
+            className="product-card rounded-xl relative overflow-hidden p-4 shadow-lg"
           >
-           
             <div
               className="wishlist-icon bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full absolute top-4 right-4 z-10 cursor-pointer"
               onClick={() => handleWishlistToggle(product.product_id)}
@@ -148,14 +146,14 @@ const NewArrival = () => {
                 <AiOutlineHeart size={24} className="text-gray-400" />
               )}
             </div>
-            <NavLink  to={`/products/${product.product_id}/${product.products_slug}`}>
-            <div className="product-image w-full overflow-hidden mx-auto mb-4">
-              <img
-                src={`${imageURI + product.thumbnail}`}
-                alt={product.product_name}
-                className="w-full h-64 object-cover object-center rounded-xl"
-              />
-            </div>
+            <NavLink to={`/products/${product.product_id}/${product.products_slug}`}>
+              <div className="product-image w-full overflow-hidden mx-auto mb-4">
+                <img
+                  src={`${imageURI + product.thumbnail}`}
+                  alt={product.product_name}
+                  className="w-full h-64 object-cover object-center rounded-xl"
+                />
+              </div>
             </NavLink>
             <div className="product-info text-center bg-gray-100 p-6 rounded-b-xl">
               <h3 className="text-lg font-bold text-gray-800 line-clamp-1">

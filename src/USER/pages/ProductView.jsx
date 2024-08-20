@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-// import { addItem } from "../store/slices/productsSlice";
 import { toast } from "react-toastify";
 import {
   FaShippingFast,
@@ -10,14 +9,16 @@ import {
   FaCartPlus,
 } from "react-icons/fa";
 import SimilarProducts from "../components/SimilarProducts";
-import Navbar from "../components/NavBar/NavBar";
 import { useParams } from "react-router-dom";
 import GlobalAxios from "../../../Global/GlobalAxios";
+import ClipLoader from "react-spinners/ClipLoader"; // Import the loading spinner
+
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(true); // Initial loading state
+  const [loadingButton, setLoadingButton] = useState(null); // Track loading state for buttons
   const [mainImage, setMainImage] = useState("");
   const [productInfo, setProductInfo] = useState({
     id: "",
@@ -52,22 +53,29 @@ const ProductDetails = () => {
     path: "",
     images: [],
   });
+
   const { id, slug } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await GlobalAxios.get(`/product/${id}/${slug}`);
-      console.log(response.data.data);
-      window.scrollTo(0, 0);
-      if (response.data.status === "success") {
-        setProductInfo(response.data.data);
-        setMainImage(response.data.data.thumbnail);
+      try {
+        const response = await GlobalAxios.get(`/product/${id}/${slug}`);
+        window.scrollTo(0, 0);
+        if (response.data.status === "success") {
+          setProductInfo(response.data.data);
+          setMainImage(response.data.data.thumbnail);
+        }
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      } finally {
+        setLoading(false); // Stop loading when data is fetched
       }
     };
     fetchData();
-  }, []);
+  }, [id, slug]);
 
-  const handleAddToCart = async(id) => {
+  const handleAddToCart = async (id) => {
+    setLoadingButton(id); // Set loading state for the specific button
     try {
       const response = await GlobalAxios.post("/cart", {
         product_id: id,
@@ -78,24 +86,30 @@ const ProductDetails = () => {
         dispatch(addCartItem(id));
       }
     } catch (error) {
-      // toast.error("Failed to add product to cart. Please try again.");
+      console.error("Failed to add product to cart:", error);
     } finally {
-      setLoadingProductId(null);
+      setLoadingButton(null); // Reset loading state
     }
   };
 
   const handleBuyNow = (id) => {
-    // Placeholder for Buy Now functionality
-    toast.success(`Proceeding to buy ${product.name}!`);
+    toast.success(`Proceeding to buy ${productInfo.name}!`);
   };
 
   const handleImageClick = (src) => {
     setMainImage(src);
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <ClipLoader size={60} color={"#123abc"} />
+      </div>
+    );
+  }
+
   return (
     <>
-      <Navbar />
       <div className="flex flex-col md:flex-row items-start justify-center w-full p-6 text-gray-800 shadow-lg box-border">
         <div className="flex-1 max-w-lg mb-6 md:mb-0 md:mr-6">
           <img
@@ -143,18 +157,24 @@ const ProductDetails = () => {
           <div className="flex space-x-4 mb-6">
             <button
               onClick={() => handleAddToCart(productInfo.product_id)}
-              disabled={loading === productInfo.product_id}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+              disabled={loadingButton === productInfo.product_id}
+              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300 ${
+                loadingButton === productInfo.product_id ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <FaCartPlus className="mr-2 text-white" />
-              {loading === productInfo.product_id ? "Adding..." : "Add to Cart"}
+              {loadingButton === productInfo.product_id ? (
+                <ClipLoader size={20} color="#fff" />
+              ) : (
+                "Add to Cart"
+              )}
             </button>
             <button
-              onClick={() => handleBuyNow(product.product_id)}
-              className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+              onClick={() => handleBuyNow(productInfo.product_id)}
+              className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300"
             >
               <FaCartPlus className="mr-2 text-white" />
-              Add to WishList
+              Buy Now
             </button>
           </div>
           <div className="mb-6">

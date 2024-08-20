@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -9,7 +9,7 @@ import StarRating from '../StarRating';
 import { addCartItem } from '../../store/slices/cartSlice';
 import GlobalAxios from '../../../../Global/GlobalAxios';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { removeWishlistThunk,addWishlistThunk } from '../../store/slices/wishListSlice';
+import { removeWishlistThunk, addWishlistThunk } from '../../store/slices/wishListSlice';
 import { NavLink } from 'react-router-dom';
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
@@ -18,6 +18,7 @@ const TopProducts = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.cart);
   const [homeProducts, setHomeProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // Added loading state
   const [loadingProductId, setLoadingProductId] = useState(null);
   const [wishlist, setWishlist] = useState([]); // State to manage wishlist
 
@@ -30,11 +31,12 @@ const TopProducts = () => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false); // Stop loading once products are fetched
       }
     };
     fetchProducts();
   }, [dispatch]);
-
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -58,10 +60,9 @@ const TopProducts = () => {
       const response = await GlobalAxios.post('/cart', data);
       if (response.data.status === 'success') {
         toast.success('Product added to cart');
-        dispatch(addCartItem(id)); // Dispatch the entire product data, not just the ID
+        dispatch(addCartItem(id));
       }
     } catch (error) {
-      // toast.error('Failed to add product to cart');
       console.error('Add to Cart Error:', error);
     } finally {
       setLoadingProductId(null); // Stop loading indicator
@@ -70,12 +71,12 @@ const TopProducts = () => {
 
   const handleWishlistToggle = (p_id) => {
     if (wishlist.includes(p_id)) {
-      setWishlist(wishlist.filter((id) => id !== p_id)); 
-      dispatch(removeWishlistThunk(p_id))// Remove from wishlist
+      setWishlist(wishlist.filter((id) => id !== p_id));
+      dispatch(removeWishlistThunk(p_id)); // Remove from wishlist
       toast.info(`Product removed from wishlist`);
     } else {
       setWishlist([...wishlist, p_id]); // Add to wishlist
-      dispatch(addWishlistThunk(p_id))// Add to wishlist
+      dispatch(addWishlistThunk(p_id));
       toast.success(`Product added to wishlist`);
     }
   };
@@ -114,17 +115,28 @@ const TopProducts = () => {
     ],
   };
 
+  // Show loading spinner until products are fetched
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <ClipLoader size={50} color={"#123abc"} />
+        <p className="text-gray-800 text-lg ml-4">Loading... Please Wait</p>
+      </div>
+    );
+  }
+
   return (
     <div className="my-5 font-sans py-5 w-11/12 mx-auto">
       <h2 className="text-4xl text-center font-extrabold text-gray-800 mb-4">Top Products</h2>
-      <p className="text-xl text-center font-semibold text-gray-700 mb-12">Product's Advantages and Attract the Attention</p>
+      <p className="text-xl text-center font-semibold text-gray-700 mb-12">
+        Product's Advantages and Attract the Attention
+      </p>
       <Slider {...settings} className="w-11/12 mx-auto flex gap-6">
         {homeProducts.map((product) => (
           <div
             key={product.product_id}
             className="product-card rounded-xl relative overflow-hidden p-4 shadow-lg"
           >
-            
             <div
               className="wishlist-icon bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full absolute top-4 right-4 z-10 cursor-pointer"
               onClick={() => handleWishlistToggle(product.product_id)}
@@ -136,13 +148,13 @@ const TopProducts = () => {
               )}
             </div>
             <NavLink to={`/products/${product.product_id}/${product.products_slug}`}>
-            <div className="product-image flex justify-center w-full overflow-hidden mx-auto mb-4">
-              <img
-                src={`${imageURI + product.thumbnail}`}
-                alt={product.product_name}
-                className="w-full h-64 object-cover object-center rounded-xl"
-              />
-            </div>
+              <div className="product-image flex justify-center w-full overflow-hidden mx-auto mb-4">
+                <img
+                  src={`${imageURI + product.thumbnail}`}
+                  alt={product.product_name}
+                  className="w-full h-64 object-cover object-center rounded-xl"
+                />
+              </div>
             </NavLink>
             <div className="product-info text-center rounded-b-xl">
               <h3 className="text-lg font-bold text-gray-800 line-clamp-1">{product.product_name}</h3>

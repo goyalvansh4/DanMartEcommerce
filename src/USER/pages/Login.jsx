@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import GlobalAxios from '../../../Global/GlobalAxios';
 import { login } from '../store/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -23,7 +24,7 @@ const Login = () => {
       password: e.target.password.value,
     };
      try {
-      const response  = await GlobalAxios.post('/login',data);
+      const response  = await axios.post('http://192.168.123.152:8000/api/v1/user/login',data);
       // console.log(response.data.data, "Login Response");
       const token  = response.data.data.token;
 

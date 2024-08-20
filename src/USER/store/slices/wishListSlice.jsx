@@ -24,8 +24,10 @@ export const fetchWishlistThunk = createAsyncThunk(
 export const addWishlistThunk = createAsyncThunk(
   "wishlist/addWishlist",
   async (productId, { rejectWithValue }) => {
+    console.log("Product ID Add to wishlist", productId);
     try {
       const response = await GlobalAxios.post("/wishlist", { product_id: productId });
+      console.log(response.data.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
