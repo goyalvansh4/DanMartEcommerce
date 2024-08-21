@@ -102,7 +102,8 @@ const ProductCategories = () => {
 
   return (
     <div className="font-[sans-serif] py-4 mx-auto lg:max-w-6xl max-w-lg md:max-w-full">
-      <ToastContainer />
+      <ToastContainer position="bottom-right"
+ />
       <div className="flex flex-col lg:flex-row justify-between p-5">
         <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
           Our Products
@@ -148,7 +149,7 @@ const ProductCategories = () => {
               <p className="text-lg font-semibold text-gray-800 mt-2">
                 ${product.price}{" "}
                 <span className="text-gray-400 ml-2 line-through">
-                  ${product.originalPrice}
+                  ${product.max_price}
                 </span>
               </p>
               <div className="flex justify-center items-center">

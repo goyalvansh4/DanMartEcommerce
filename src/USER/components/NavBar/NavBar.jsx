@@ -3,7 +3,7 @@ import { FaHeart, FaUser, FaBoxOpen, FaChevronDown } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import CartIconWithBadge from './CartIconWithBadge';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCartItems } from '../../store/slices/cartSlice';
+import { fetchCartItems} from '../../store/slices/cartSlice';
 import Cookies from 'js-cookie';
 
 const categories = [
@@ -13,24 +13,15 @@ const categories = [
 ];
 
 const Navbar = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { items } = useSelector((state) => state.cart);
-  const [cartItemCount, setCartItemCount] = useState(0);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showCategories, setShowCategories] = useState(false); // State to control the dropdown
 
-  const authToken = Cookies.get('authToken'); // Check if user is logged in
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(fetchCartItems());
-  }, [dispatch]);
 
-  useEffect(() => {
-    const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-    setCartItemCount(itemCount);
-  }, [items]);
+  const authToken = Cookies.get('authToken');
+   // Check if user is logged in
 
   const handleLogout = () => {
     Cookies.remove('authToken');
@@ -95,7 +86,7 @@ const Navbar = () => {
               <FaHeart className="w-6 h-6" />
             </NavLink>
             <NavLink to="/cart" className="text-gray-800 hover:text-blue-600">
-              <CartIconWithBadge itemCount={cartItemCount} />
+              <CartIconWithBadge />
             </NavLink>
             <NavLink to="/orders" className="text-gray-800 hover:text-blue-600">
               <FaBoxOpen className="w-6 h-6" />

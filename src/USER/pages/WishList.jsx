@@ -106,11 +106,13 @@ const WishList = () => {
                 />
               </NavLink>
               <div className="text-center">
-                <h3 className="text-lg font-bold text-gray-800 line-clamp-1">{item.product_name}</h3>
+                <h3 className="text-lg font-bold text-gray-800 line-clamp-1">
+                  {item.product_name}
+                </h3>
                 <p className="text-lg font-semibold text-gray-800 mt-2">
                   ${item.price}{" "}
                   <span className="text-gray-400 ml-2 line-through">
-                    ${item.originalPrice}
+                    ${item.max_price}
                   </span>
                 </p>
                 <div className="flex justify-center items-center mt-2">
@@ -132,7 +134,7 @@ const WishList = () => {
           ))}
         </div>
       )}
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };

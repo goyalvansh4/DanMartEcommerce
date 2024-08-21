@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
   FaShippingFast,
@@ -7,19 +7,27 @@ import {
   FaRegCheckCircle,
   FaUndoAlt,
   FaCartPlus,
+  FaHeart,
 } from "react-icons/fa";
-import SimilarProducts from "../components/SimilarProducts";
+import SimilarProducts from "../../components/SimilarProducts";
 import { useParams } from "react-router-dom";
-import GlobalAxios from "../../../Global/GlobalAxios";
-import ClipLoader from "react-spinners/ClipLoader"; // Import the loading spinner
-
+import GlobalAxios from "../../../../Global/GlobalAxios";
+import ClipLoader from "react-spinners/ClipLoader";
+import {
+  addWishlistThunk,
+  removeWishlistThunk,
+} from "../../store/slices/wishListSlice";
+import { addCartItem } from "../../store/slices/cartSlice";
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true); // Initial loading state
-  const [loadingButton, setLoadingButton] = useState(null); // Track loading state for buttons
+  // const wishlist = useSelector((state) => state.wishlist); // Access wishlist from Redux store
+  const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(null);
+  const [loadingProductId, setLoadingProductId] = useState(null);
   const [mainImage, setMainImage] = useState("");
+  const [wishlist, setWishlist] = useState([]);
   const [productInfo, setProductInfo] = useState({
     id: "",
     name: "",
@@ -68,14 +76,26 @@ const ProductDetails = () => {
       } catch (error) {
         console.error("Error fetching product data:", error);
       } finally {
-        setLoading(false); // Stop loading when data is fetched
+        setLoading(false);
       }
     };
     fetchData();
   }, [id, slug]);
 
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const response = await GlobalAxios.get("/wishlist");
+        setWishlist(response.data.data.map((item) => item.product_id));
+      } catch (error) {
+        console.error("Failed to fetch wishlist:", error);
+      }
+    };
+    fetchWishlist();
+  }, []);
+
   const handleAddToCart = async (id) => {
-    setLoadingButton(id); // Set loading state for the specific button
+    setLoadingProductId(id);
     try {
       const response = await GlobalAxios.post("/cart", {
         product_id: id,
@@ -88,7 +108,17 @@ const ProductDetails = () => {
     } catch (error) {
       console.error("Failed to add product to cart:", error);
     } finally {
-      setLoadingButton(null); // Reset loading state
+      setLoadingProductId(null);
+    }
+  };
+
+  const handleWishlistToggle = (p_id) => {
+    if (wishlist.includes(p_id)) {
+      dispatch(removeWishlistThunk(p_id)); // Remove from wishlist
+      toast.info(`Product removed from wishlist`);
+    } else {
+      dispatch(addWishlistThunk(p_id)); // Add to wishlist
+      toast.success(`Product added to wishlist`);
     }
   };
 
@@ -130,11 +160,13 @@ const ProductDetails = () => {
           </div>
         </div>
         <div className="flex-2 max-w-2xl bg-white p-6 rounded-lg shadow-md">
-          <h1 className="text-2xl font-semibold mb-4">{productInfo.product_name}</h1>
+          <h1 className="text-2xl font-semibold mb-4">
+            {productInfo.product_name}
+          </h1>
           <h2 className="text-xl font-medium mb-2">
             Price: ${productInfo.price}{" "}
             <span className="line-through text-gray-500">
-              ${productInfo.originalPrice}
+              ${productInfo.max_price}
             </span>
           </h2>
           <h3 className="text-lg mb-2">
@@ -159,7 +191,9 @@ const ProductDetails = () => {
               onClick={() => handleAddToCart(productInfo.product_id)}
               disabled={loadingButton === productInfo.product_id}
               className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300 ${
-                loadingButton === productInfo.product_id ? "opacity-50 cursor-not-allowed" : ""
+                loadingButton === productInfo.product_id
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
             >
               <FaCartPlus className="mr-2 text-white" />
@@ -170,11 +204,19 @@ const ProductDetails = () => {
               )}
             </button>
             <button
-              onClick={() => handleBuyNow(productInfo.product_id)}
-              className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300"
+              onClick={() => handleWishlistToggle(productInfo.product_id)}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300"
             >
-              <FaCartPlus className="mr-2 text-white" />
-              Buy Now
+              <FaHeart
+                className={`mr-2 text-white ${
+                  wishlist.includes(productInfo.product_id)
+                    ? "text-red-700"
+                    : ""
+                }`}
+              />
+              {wishlist.includes(productInfo.product_id)
+                ? "Remove from Wishlist"
+                : "Add to Wishlist"}
             </button>
           </div>
           <div className="mb-6">

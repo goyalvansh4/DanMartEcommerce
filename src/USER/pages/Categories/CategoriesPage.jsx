@@ -1,6 +1,6 @@
 import React from 'react'
-import ProductCategories from './Categories/ProductCategories';
-import Categories from '../components/Categories';
+import ProductCategories from './ProductCategories';
+import Categories from '../../components/Categories';
 
 const CategoriesPage = () => {
   return (

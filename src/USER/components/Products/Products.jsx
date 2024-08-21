@@ -84,7 +84,7 @@ const Products = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
       <div className="container mx-auto py-8">
         <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
           Our Products
@@ -132,7 +132,7 @@ const Products = () => {
                   <p className="text-lg font-semibold text-gray-800 mt-2">
                     ${product.price}{" "}
                     <span className="text-gray-400 ml-2 line-through">
-                      ${product.originalPrice}
+                      ${product.max_price}
                     </span>
                   </p>
                   <div className="flex justify-center items-center">

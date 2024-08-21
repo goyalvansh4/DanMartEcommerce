@@ -3,7 +3,7 @@ import { FaCreditCard, FaPaypal, FaMoneyBillWave } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
 import { ClipLoader, PuffLoader } from "react-spinners";
-import GlobalAxios from "../../../Global/GlobalAxios";
+import GlobalAxios from "../../../../Global/GlobalAxios";
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -28,11 +28,10 @@ const CheckOut = () => {
     const fetchCartItems = async () => {
       try {
         const response = await GlobalAxios.get("/cart");
-        setCartData(response.data.data.carts);
+        const carts = response.data.data.carts;
+        setCartData(carts);
         setTotalPrice(Number(response.data.data.total_price));
-        setTotalQuantity(
-          response.data.data.carts.reduce((acc, item) => acc + item.quantity, 0)
-        );
+        setTotalQuantity(carts.reduce((acc, item) => acc + item.quantity, 0));
       } catch (error) {
         console.error("Failed to fetch cart items:", error);
       } finally {
@@ -73,11 +72,11 @@ const CheckOut = () => {
         }
       } else {
         console.error("Order not submitted successfully");
+        setLoading(true);
       }
     } catch (error) {
       console.error("Error submitting order:", error);
-    } finally {
-      setLoading(false); // Set loading to false after the form submission is complete
+      setLoading(false);
     }
   };
 
@@ -86,6 +85,22 @@ const CheckOut = () => {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <PuffLoader size={80} color="#123abc" />
+      </div>
+    );
+  }
+
+  if (cartData.length === 0) {
+    // Display message if the cart is empty
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            Your cart is empty!
+          </h2>
+          <p className="text-lg text-gray-600">
+            Please add some items to your cart before proceeding to checkout.
+          </p>
+        </div>
       </div>
     );
   }
@@ -188,6 +203,10 @@ const CheckOut = () => {
                     className="px-4 py-3 bg-gray-50 text-gray-800 w-full text-sm border-2 rounded-md focus:border-blue-500 outline-none"
                   />
                 </div>
+                {/* <div>
+                  <input type="checkbox" onChange={handleCheckBox} />
+                  <label> Create an account?</label>
+                </div> */}
                 <button
                   type="submit"
                   className="px-6 py-3 bg-blue-600 text-white rounded-md mt-4 hover:bg-blue-700 flex justify-center items-center"

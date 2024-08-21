@@ -3,25 +3,25 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ShoppingCart from "./USER/pages/ShoppingCart.jsx";
+import ShoppingCart from "./USER/pages/Orders/ShoppingCart.jsx";
 import Main from "./USER/pages/Main.jsx";
-import CheckOut from "./USER/pages/CheckOut.jsx";
+import CheckOut from "./USER/pages/Orders/CheckOut.jsx";
 import store from "./USER/store/store.jsx";
 import { Provider } from "react-redux";
 import AboutUs from "./USER/pages/AboutUs.jsx";
 import ContactUs from "./USER/pages/ContactUs.jsx";
-import Login from "./USER/pages/Login.jsx";
-import Register from "./USER/pages/Register.jsx";
-import ProductView from "./USER/pages/ProductView.jsx";
-import ProtectedRoute from "./USER/routes/ProtectedRoutes.jsx"; // Import the ProtectedRoute component
+import Login from "./USER/pages/Authentication/Login.jsx";
+import Register from "./USER/pages/Authentication/Register.jsx";
+import ProductView from "./USER/pages/Products/ProductView.jsx";
 import WishList from "./USER/pages/WishList.jsx";
-import ProductCategories from "./USER/pages/Categories/ProductCategories.jsx";
-import CategoriesPage from "./USER/pages/CategoriesPage.jsx";
-import Thanks from "./USER/pages/Thanks.jsx";
+import CategoriesPage from "./USER/pages/Categories/CategoriesPage.jsx";
+import Thanks from "./USER/pages/Payment/Thanks.jsx";
 import TopProducts from "./USER/pages/Products/TopProducts.jsx";
 import FeatureProducts from "./USER/pages/Products/FeatureProducts.jsx";
 import OrderHistory from "./USER/pages/Orders/OrderHistory.jsx";
-import PaymentCancel from "./USER/pages/PaymentCancel.jsx";
+import PaymentCancel from "./USER/pages/Payment/PaymentCancel.jsx";
+import PaymentFailed from "./USER/pages/Payment/PaymentFailed.jsx";
+import TrackOrder from "./USER/pages/Orders/TrackOrder.jsx";
 
 const router = createBrowserRouter([
   {
@@ -87,9 +87,17 @@ const router = createBrowserRouter([
     element: <Thanks />,
   },
   {
-    path:"/cancel",
+    path: "/cancel",
     element: <PaymentCancel />,
-  }
+  },
+  {
+    path: "/failed",
+    element: <PaymentFailed />,
+  },
+  {
+    path: "/track",
+    element: <TrackOrder />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

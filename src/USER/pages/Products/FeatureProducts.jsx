@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { ClipLoader } from 'react-spinners';
-import StarRating from '../../components/StarRating';
-import { addCartItem } from '../../store/slices/cartSlice';
-import GlobalAxios from '../../../../Global/GlobalAxios';
-import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { removeWishlistThunk, addWishlistThunk } from '../../store/slices/wishListSlice';
-import { NavLink } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
+import StarRating from "../../components/StarRating";
+import { addCartItem } from "../../store/slices/cartSlice";
+import GlobalAxios from "../../../../Global/GlobalAxios";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import {
+  removeWishlistThunk,
+  addWishlistThunk,
+} from "../../store/slices/wishListSlice";
+import { NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -23,8 +26,8 @@ const FeatureProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await GlobalAxios.get('/product/new');
-        if (response.data.status === 'success') {
+        const response = await GlobalAxios.get("/product/new");
+        if (response.data.status === "success") {
           setHomeProducts(response.data.data);
         }
       } catch (error) {
@@ -39,10 +42,10 @@ const FeatureProducts = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const response = await GlobalAxios.get('/wishlist');
+        const response = await GlobalAxios.get("/wishlist");
         setWishlist(response.data.data.map((item) => item.product_id));
       } catch (error) {
-        console.error('Failed to fetch wishlist:', error);
+        console.error("Failed to fetch wishlist:", error);
       }
     };
     fetchWishlist();
@@ -55,13 +58,13 @@ const FeatureProducts = () => {
       quantity: 1,
     };
     try {
-      const response = await GlobalAxios.post('/cart', data);
-      if (response.data.status === 'success') {
-        toast.success('Product added to cart');
+      const response = await GlobalAxios.post("/cart", data);
+      if (response.data.status === "success") {
+        toast.success("Product added to cart");
         dispatch(addCartItem(id));
       }
     } catch (error) {
-      console.error('Add to Cart Error:', error);
+      console.error("Add to Cart Error:", error);
     } finally {
       setLoadingProductId(null);
     }
@@ -71,18 +74,22 @@ const FeatureProducts = () => {
     if (wishlist.includes(p_id)) {
       setWishlist(wishlist.filter((id) => id !== p_id));
       dispatch(removeWishlistThunk(p_id));
-      toast.info('Product removed from wishlist');
+      toast.info("Product removed from wishlist");
     } else {
       setWishlist([...wishlist, p_id]);
       dispatch(addWishlistThunk(p_id));
-      toast.success('Product added to wishlist');
+      toast.success("Product added to wishlist");
     }
   };
 
   return (
     <div className="my-5 font-sans py-5 w-11/12 mx-auto">
-      <h2 className="text-4xl text-center font-extrabold text-gray-800 mb-4">Feature Products</h2>
-      <p className="text-xl text-center font-semibold text-gray-700 mb-12">Product's Advantages and Attract the Attention</p>
+      <h2 className="text-4xl text-center font-extrabold text-gray-800 mb-4">
+        Feature Products
+      </h2>
+      <p className="text-xl text-center font-semibold text-gray-700 mb-12">
+        Product's Advantages and Attract the Attention
+      </p>
 
       {loading ? (
         <div className="flex justify-center items-center">
@@ -110,7 +117,9 @@ const FeatureProducts = () => {
                     <AiOutlineHeart size={24} className="text-gray-400" />
                   )}
                 </div>
-                <NavLink to={`/products/${product.product_id}/${product.products_slug}`}>
+                <NavLink
+                  to={`/products/${product.product_id}/${product.products_slug}`}
+                >
                   <div className="product-image flex justify-center w-full overflow-hidden mx-auto mb-4">
                     <img
                       src={`${imageURI + product.thumbnail}`}
@@ -120,10 +129,14 @@ const FeatureProducts = () => {
                   </div>
                 </NavLink>
                 <div className="product-info text-center rounded-b-xl">
-                  <h3 className="text-lg font-bold text-gray-800">{product.product_name}</h3>
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {product.product_name}
+                  </h3>
                   <h4 className="text-lg text-gray-800 font-bold mt-2">
-                    ${product.price}{' '}
-                    <strike className="text-gray-400 ml-2 font-medium">${product.originalPrice}</strike>
+                    ${product.price}{" "}
+                    <strike className="text-gray-400 ml-2 font-medium">
+                      ${product.max_price}
+                    </strike>
                   </h4>
                   <div className="mt-2 flex justify-center">
                     <StarRating rating={4} />

@@ -146,7 +146,9 @@ const NewArrival = () => {
                 <AiOutlineHeart size={24} className="text-gray-400" />
               )}
             </div>
-            <NavLink to={`/products/${product.product_id}/${product.products_slug}`}>
+            <NavLink
+              to={`/products/${product.product_id}/${product.products_slug}`}
+            >
               <div className="product-image w-full overflow-hidden mx-auto mb-4">
                 <img
                   src={`${imageURI + product.thumbnail}`}
@@ -162,7 +164,7 @@ const NewArrival = () => {
               <h4 className="text-lg text-gray-800 font-bold mt-2">
                 ${product.price}{" "}
                 <strike className="text-gray-400 ml-2 font-medium">
-                  ${product.originalPrice}
+                  ${product.max_price}
                 </strike>
               </h4>
               <div className="mt-2 flex justify-center">

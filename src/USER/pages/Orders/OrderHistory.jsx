@@ -13,61 +13,9 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        // Simulate API call with dummy data
-        const response = await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              data: {
-                data: {
-                  orders: [
-                    {
-                      order_id: "12345",
-                      order_date: "2023-08-01T14:48:00.000Z",
-                      payment_status: "Paid",
-                      total_amount: 150.0,
-                      items: [
-                        {
-                          product_id: "1",
-                          name: "Product 1",
-                          quantity: 2,
-                          price: 50.0,
-                          total: 100.0,
-                          thumbnail: "product1.jpg",
-                        },
-                        {
-                          product_id: "2",
-                          name: "Product 2",
-                          quantity: 1,
-                          price: 50.0,
-                          total: 50.0,
-                          thumbnail: "product2.jpg",
-                        },
-                      ],
-                    },
-                    {
-                      order_id: "67890",
-                      order_date: "2023-08-10T14:48:00.000Z",
-                      payment_status: "Pending",
-                      total_amount: 200.0,
-                      items: [
-                        {
-                          product_id: "3",
-                          name: "Product 3",
-                          quantity: 4,
-                          price: 50.0,
-                          total: 200.0,
-                          thumbnail: "product3.jpg",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              },
-            });
-          }, 2000); // Simulate 2 seconds loading time
-        });
-
-        setOrderHistory(response.data.data.orders);
+        const response = await GlobalAxios.get('/order-history');
+        // console.log(response.data.data);
+        setOrderHistory(response.data.data);
       } catch (error) {
         console.error("Error fetching order history:", error);
       } finally {
@@ -77,14 +25,34 @@ const OrderHistory = () => {
     fetchOrderHistory();
   }, []);
 
-  const handleCancelOrder = async () => {
+  const handleCancelOrder = async (orderId) => {
     try {
-      const response = await GlobalAxios.get("/test");
-      console.log(response.data);
+      const response = await GlobalAxios.post(`/cancel-order/${orderId}`);
+      // console.log(response.data);
+      // Update order status in the UI or refetch the order history
     } catch (error) {
-      
+      console.error("Error cancelling the order:", error);
     }
-  }
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-700";
+      case "paid":
+        return "bg-green-100 text-green-700";
+      case "unpaid":
+        return "bg-red-100 text-red-700";
+      case "shipped":
+        return "bg-blue-100 text-blue-700";
+      case "delivered":
+        return "bg-purple-100 text-purple-700";
+      case "cancelled":
+        return "bg-gray-200 text-gray-700";
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
 
   return (
     <div className="my-10 bg-white p-4">
@@ -99,45 +67,45 @@ const OrderHistory = () => {
         ) : orderHistory.length === 0 ? (
           <p className="text-center text-gray-600">No orders found.</p>
         ) : (
-          orderHistory.map((order) => (
+          orderHistory.map((orderData) => (
             <div
-              key={order.order_id}
+              key={orderData.order.order_id}
               className="bg-gray-100 p-6 rounded-md shadow-sm mb-6"
             >
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">
-                    Order ID: {order.order_id}
+                    Order ID: {orderData.order.order_id}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Placed on: {new Date(order.order_date).toLocaleDateString()}
+                    Placed on: {new Date(orderData.order.created_at).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Shipping to: {orderData.shipping_address.name}, {orderData.shipping_address.city}, {orderData.shipping_address.state}
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
-                    <AiOutlineEye />
-                    View Details
-                  </button>
                   <button
-                  onClick={handleCancelOrder}
-                   className="flex items-center gap-2 text-red-600 hover:text-red-700">
+                    onClick={() => handleCancelOrder(orderData.order.order_id)}
+                    className="flex items-center gap-2 text-red-600 hover:text-red-700"
+                  >
                     <MdOutlineCancel />
                     Cancel Order
                   </button>
                 </div>
               </div>
-              {order.items.map((item) => (
-                <div key={item.product_id} className="flex items-center gap-4 mb-4">
+              {orderData.order_items.map((item) => (
+                <div key={item.id} className="flex items-center gap-4 mb-4">
                   <div className="w-24 h-24 bg-white p-2 rounded-md">
                     <img
-                      src={`${item.thumbnail}`}
+                      src={`${imageURI}/${item.product_thumbnail}`}
                       className="w-full h-full object-contain"
-                      alt={item.name}
+                      alt={item.product_name}
                     />
                   </div>
                   <div>
                     <h4 className="text-base font-bold text-gray-800">
-                      {item.name}
+                      {item.product_name}
                     </h4>
                     <div className="text-sm text-gray-600">
                       Quantity: {item.quantity}
@@ -155,13 +123,19 @@ const OrderHistory = () => {
               <div className="flex justify-between items-center">
                 <div className="text-lg font-normal">
                   Payment Status:{" "}
-                  <span className={`font-bold ${order.payment_status === 'Paid' ? 'text-green-600' : 'text-red-600'}`}>
-                    {order.payment_status}
+                  <span className={`font-bold ${getStatusBadgeClass(orderData.order.payment_status)} px-2 py-1 rounded-full`}>
+                    {orderData.order.payment_status.charAt(0).toUpperCase() + orderData.order.payment_status.slice(1)}
                   </span>
                 </div>
                 <div className="text-lg font-normal">
-                  Total Amount: ${order.total_amount}
+                  Total Amount: ${orderData.order.total_amount}
                 </div>
+              </div>
+              <div className="text-right mt-4">
+              Delivery Status:{" "}
+                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${getStatusBadgeClass(orderData.order.status)}`}>
+                   {orderData.order.status.charAt(0).toUpperCase() + orderData.order.status.slice(1)}
+                </span>
               </div>
             </div>
           ))

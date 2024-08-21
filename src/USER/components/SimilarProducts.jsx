@@ -105,7 +105,7 @@ const SimilarProducts = () => {
               <h4 className="text-lg text-gray-800 font-bold mt-4">
                 ${product.price}{" "}
                 <strike className="text-gray-400 ml-2 font-medium">
-                  ${product.originalPrice}
+                  ${product.max_price}
                 </strike>
               </h4>
               <button
@@ -126,7 +126,7 @@ const SimilarProducts = () => {
           </div>
         ))}
       </div>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </div>
   );
 };
