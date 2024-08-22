@@ -11,7 +11,7 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    passwordConfirmation: "", // This should match the name attribute in the input field
   });
 
   const handleChange = (e) => {
@@ -21,7 +21,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    formData["password_confirmation"] = formData.passwordConfirmation;
     formData["guest-uuid"] = Cookies.get("guestUUID") || null;
     try {
       const response = await GlobalAxios.post("/register", formData);
@@ -33,7 +33,7 @@ const Register = () => {
           name: "",
           email: "",
           password: "",
-          confirmPassword: "",
+          passwordConfirmation: "",
         });
       }
     } catch (error) {
@@ -102,16 +102,16 @@ const Register = () => {
           </div>
           <div>
             <label
-              htmlFor="confirmPassword"
+              htmlFor="passwordConfirmation"
               className="block text-sm font-medium text-gray-700"
             >
               Confirm Password
             </label>
             <input
               type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
+              id="passwordConfirmation"
+              name="passwordConfirmation" // This should match the state key
+              value={formData.passwordConfirmation}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"

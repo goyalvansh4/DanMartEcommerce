@@ -67,9 +67,10 @@ const ShoppingCart = () => {
 
   const handleRemove = async (id) => {
     try {
-      dispatch(removeCartItem(id));
+      
       setCartData(cartData.filter((item) => item.product_id !== id));
       toast.info("Item removed from cart");
+      dispatch(removeCartItem(id));
       // dispatch(removeCart(id));
     } catch (error) {
       console.error("Failed to remove item from cart", error);

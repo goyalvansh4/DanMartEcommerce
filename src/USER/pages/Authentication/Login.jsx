@@ -32,7 +32,7 @@ const Login = () => {
 
       if (response.data.status === "success") {
         setLoading(false);
-        Cookies.set("authToken", token, { expires: 1 });
+        Cookies.set("authToken", token, { expires: 0.25 });
         Cookies.remove("guestUUID");
         dispatch(login());
         window.location.href = "/";
@@ -65,9 +65,7 @@ const Login = () => {
             </div>
           </div>
           <div className="mb-4">
-            <label className="text-gray-800 text-sm mb-2 block">
-              Password
-            </label>
+            <label className="text-gray-800 text-sm mb-2 block">Password</label>
             <div className="relative flex items-center">
               <input
                 name="password"
@@ -131,13 +129,12 @@ const Login = () => {
             </NavLink>
           </div>
           <Link
-          to="/"
-          className="inline-block mt-6 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
-        >
-          Back to Home
-        </Link>
+            to="/"
+            className="inline-block mt-6 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+          >
+            Back to Home
+          </Link>
         </form>
-        
       </div>
     </div>
   );

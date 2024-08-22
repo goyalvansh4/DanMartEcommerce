@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import GlobalAxios from '../../../../Global/GlobalAxios';
-import { setCartItemCount, incrementCartItemCount, decrementCartItemCount } from './cartCountSlice';
 import Cookies from 'js-cookie';
 
 
@@ -11,8 +10,6 @@ export const fetchCartItems = createAsyncThunk(
   'cart/fetchCartItems',
   async () => {
     const response = await GlobalAxios.get('/cart');
-    const itemCount = response.data.data.carts.reduce((acc, item) => acc + item.quantity, 0);
-    setCartItemCount(itemCount);
     return response.data.data.carts || []; // Ensure it returns an array
   }
 );
@@ -21,7 +18,6 @@ export const fetchCartItems = createAsyncThunk(
 export const removeCartItem = createAsyncThunk(
   'cart/removeCartItem',
   async (itemId, { rejectWithValue }) => {
-    decrementCartItemCount(1);
     try {
       const response = await GlobalAxios.delete(`/cart/${itemId}`);
       return response.data; // Returning the id so we can remove it from the state
@@ -43,13 +39,11 @@ const cartSlice = createSlice({
   reducers: {
     addCartItem: (state, action) => {
       state.items.push(action.payload);
-      incrementCartItemCount(1);
     },
     upDateCartItem: (state, action) => {
       state.items = state.items.map((item) =>
         item.id === action.payload.id ? { ...item, ...action.payload } : item
       );
-    incrementCartItemCount(action.payload.quantity);
     }
   },
   extraReducers: (builder) => {
