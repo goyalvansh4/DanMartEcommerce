@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { login } from "../../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -25,17 +26,22 @@ const Login = () => {
     };
     try {
       const response = await axios.post(
-        "http://192.168.123.152:8000/api/v1/user/login",
+        "https://api.danmartglobal.com/api/v1/user/login",
         data
       );
-      const token = response.data.data.token;
 
+      console.log("Login Response", response.data);
       if (response.data.status === "success") {
+        const token = response.data.data.token;
         setLoading(false);
         Cookies.set("authToken", token, { expires: 0.25 });
         Cookies.remove("guestUUID");
         dispatch(login());
         window.location.href = "/";
+      } else if (response.data.status === "error") {
+        setLoading(false);
+
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error("Login Error", error);
@@ -44,6 +50,7 @@ const Login = () => {
 
   return (
     <div className="font-sans flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
+      <ToastContainer />
       <h1 className="text-center py-5 text-4xl text-black font-semibold">
         DanMart Global
       </h1>

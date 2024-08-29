@@ -4,7 +4,7 @@ import { addCartItem } from "../../store/slices/cartSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
-import { NavLink, useParams } from "react-router-dom";
+import {  NavLink, useNavigate, useParams } from "react-router-dom";
 import StarRating from "../../components/StarRating";
 import GlobalAxios from "../../../../Global/GlobalAxios";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -13,6 +13,7 @@ import {
   addWishlistThunk,
   removeWishlistThunk,
 } from "../../store/slices/wishListSlice";
+import Cookies from "js-cookie";
 
 const imageURI = import.meta.env.VITE_IMAGE_BASE_URL;
 
@@ -24,7 +25,9 @@ const ProductCategories = () => {
   const [loadingProductId, setLoadingProductId] = useState(null);
   const { id, slug } = useParams();
   const [wishlist, setWishlist] = useState([]);
+  const navigate = useNavigate();
 
+  
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
@@ -34,7 +37,7 @@ const ProductCategories = () => {
           `/product-categories/${id}/${slug}`
         );
         if (response.data.status === "success") {
-          console.log(response.data.data);
+          // console.log(response.data.data);
           setItems(response.data.data);
         }
       } catch (error) {
@@ -89,6 +92,28 @@ const ProductCategories = () => {
     }
   };
 
+  const handleCatalog = async () => {
+    const token = Cookies.get("authToken");
+    console.log(token);
+    if (!token) {
+      toast.error("Please login to add catalog");
+      navigate("/login");
+    } else {
+      try {
+        const response = await GlobalAxios.post("/quotations", {
+          category_id: id,
+        });
+        console.log(response.data);
+        if (response.data.status === "success") {
+          toast.success("Catalog added successfully");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to add catalog. Please try again.");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="text-center flex flex-col items-center justify-center h-screen">
@@ -102,13 +127,15 @@ const ProductCategories = () => {
 
   return (
     <div className="font-[sans-serif] py-4 mx-auto lg:max-w-6xl max-w-lg md:max-w-full">
-      <ToastContainer position="bottom-right"
- />
+      <ToastContainer position="bottom-right" />
       <div className="flex flex-col lg:flex-row justify-between p-5">
         <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
           Our Products
         </h2>
-        <button className="bg-black uppercase text-[12px] font-light text-white rounded-md px-3 py-2 w-[150px] lg:w-[10%]">
+        <button
+          onClick={handleCatalog}
+          className="bg-black uppercase text-[12px] font-light text-white rounded-md px-3 py-2 w-[150px] lg:w-[10%]"
+        >
           Add catalog
         </button>
       </div>

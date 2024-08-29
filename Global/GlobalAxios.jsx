@@ -17,12 +17,12 @@ const generateUUID = ()=>{
   }
 }
 
-let apiUrl = "http://192.168.123.152:8000/api/v1";
+let apiUrl = "https://api.danmartglobal.com/api/v1";
 const token = Cookies.get("authToken");
 const UUID = generateUUID();
 
 if (token) {
-  // console.log("Token", token);
+  //console.log("Token", token);
   apiUrl += "/user";
 } else {
   apiUrl += "/guest";
@@ -41,6 +41,7 @@ GlobalAxios.interceptors.request.use(
     // If the user is authenticated, add the Bearer token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      //console.log("Token added to header", token);
     } else{
       // If the user is a guest, add the guest UUID
       config.headers["guest-uuid"] = UUID;
