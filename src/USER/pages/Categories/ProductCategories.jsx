@@ -139,7 +139,7 @@ const ProductCategories = () => {
           Add catalog
         </button>
       </div>
-      <p className="text-xl font-semibold text-gray-700 mb-12">
+      <p className="text-xl font-semibold text-gray-700 mb-12 pl-4">
         Represent Latest Products In Market
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

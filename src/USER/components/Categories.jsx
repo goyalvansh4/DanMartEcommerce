@@ -9,13 +9,7 @@ const Categories = () => {
   const [productCategory, setProductCategory] = useState([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
 
-  const priceRanges = [
-    { label: "$0 - $50", value: [0, 50] },
-    { label: "$51 - $100", value: [51, 100] },
-    { label: "$101 - $200", value: [101, 200] },
-    { label: "$201 - $500", value: [201, 500] },
-    { label: "$501 - $1000", value: [501, 1000] },
-  ];
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,13 +36,6 @@ const Categories = () => {
     fetchData();
   }, []);
 
-  const handlePriceRangeChange = (range) => {
-    setSelectedPriceRanges((prevRanges) =>
-      prevRanges.includes(range)
-        ? prevRanges.filter((r) => r !== range)
-        : [...prevRanges, range]
-    );
-  };
 
   const categories = [
     { title: "All", icon: <FaList />, items: [] },
@@ -85,31 +72,6 @@ const Categories = () => {
           </ul>
         </div>
       ))}
-
-      <div className="mt-4">
-        <h6 className="text-gray-600 text-lg font-light px-4 flex items-center">
-          <FaFilter /> <span className="ml-2">Price Filter</span>
-        </h6>
-        <div className="mt-2 px-4">
-          {priceRanges.map((range, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                id={`price-range-${index}`}
-                value={range.value}
-                onChange={() => handlePriceRangeChange(range.value)}
-                className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
-              />
-              <label
-                htmlFor={`price-range-${index}`}
-                className="ml-2 text-sm text-gray-600"
-              >
-                {range.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };

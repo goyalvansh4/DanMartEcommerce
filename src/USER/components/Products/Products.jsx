@@ -86,10 +86,10 @@ const Products = () => {
     <>
       <ToastContainer position="bottom-right" />
       <div className="container mx-auto py-8">
-        <h2 className="text-4xl font-extrabold text-gray-800 mb-4">
+        <h2 className="text-4xl font-extrabold pl-2 text-gray-800 mb-4">
           Our Products
         </h2>
-        <p className="text-xl font-semibold text-gray-700 mb-12">
+        <p className="text-xl font-semibold pl-2 text-gray-700 mb-12">
           Explore the latest products in the market.
         </p>
 

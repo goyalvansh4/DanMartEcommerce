@@ -5,7 +5,7 @@ import Products from "./Products/Products";
 const Home = () => {
   return (
     <div className="flex flex-col lg:flex-row">
-      <div className="w-full lg:w-[20%]">
+      <div className="hidden lg:block w-full lg:w-[20%]">
         <Categories />
       </div>
       <div className="w-full lg:w-[80%]">

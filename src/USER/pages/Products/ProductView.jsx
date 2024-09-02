@@ -24,10 +24,10 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   // const wishlist = useSelector((state) => state.wishlist); // Access wishlist from Redux store
   const [loading, setLoading] = useState(true);
-  const [loadingButton, setLoadingButton] = useState(null);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [loadingProductId, setLoadingProductId] = useState(null);
   const [mainImage, setMainImage] = useState("");
-  const [wishlist, setWishlist] = useState([]);
+  const [wishlist, setWishlist] = useState(false);
   const [productInfo, setProductInfo] = useState({
     id: "",
     name: "",
@@ -95,6 +95,7 @@ const ProductDetails = () => {
   }, []);
 
   const handleAddToCart = async (id) => {
+    setLoadingButton(true);
     setLoadingProductId(id);
     try {
       const response = await GlobalAxios.post("/cart", {
@@ -104,6 +105,7 @@ const ProductDetails = () => {
       if (response.data.status === "success") {
         toast.success("Product added to cart successfully.");
         dispatch(addCartItem(id));
+        setLoadingButton(false);
       }
     } catch (error) {
       console.error("Failed to add product to cart:", error);
@@ -113,17 +115,19 @@ const ProductDetails = () => {
   };
 
   const handleWishlistToggle = (p_id) => {
-    if (wishlist.includes(p_id)) {
-      dispatch(removeWishlistThunk(p_id)); // Remove from wishlist
+    if (wishlist) {
+      setWishlist(!wishlist);
       toast.info(`Product removed from wishlist`);
     } else {
-      dispatch(addWishlistThunk(p_id)); // Add to wishlist
+      setWishlist(true);
       toast.success(`Product added to wishlist`);
     }
-  };
 
-  const handleBuyNow = (id) => {
-    toast.success(`Proceeding to buy ${productInfo.name}!`);
+    if (wishlist.includes(p_id)) {
+      dispatch(removeWishlistThunk(p_id)); // Remove from wishlist
+    } else {
+      dispatch(addWishlistThunk(p_id)); // Add to wishlist
+    }
   };
 
   const handleImageClick = (src) => {
@@ -159,10 +163,8 @@ const ProductDetails = () => {
             ))}
           </div>
         </div>
-        <div className="flex-2 max-w-2xl bg-white p-6 rounded-lg shadow-md">
-          <h1 className="text-2xl font-semibold mb-4">
-            {productInfo.product_name}
-          </h1>
+        <div className="flex-2 max-w-2xl  p-6 rounded-lg ">
+          <h1 className="text-2xl font-semibold mb-4">{productInfo.name}</h1>
           <h2 className="text-xl font-medium mb-2">
             Price: ${productInfo.price}{" "}
             <span className="line-through text-gray-500">
@@ -189,15 +191,12 @@ const ProductDetails = () => {
           <div className="flex space-x-4 mb-6">
             <button
               onClick={() => handleAddToCart(productInfo.product_id)}
-              disabled={loadingButton === productInfo.product_id}
               className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300 ${
-                loadingButton === productInfo.product_id
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
+                loadingButton ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
               <FaCartPlus className="mr-2 text-white" />
-              {loadingButton === productInfo.product_id ? (
+              {loadingButton ? (
                 <ClipLoader size={20} color="#fff" />
               ) : (
                 "Add to Cart"
@@ -208,15 +207,9 @@ const ProductDetails = () => {
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-flex items-center transition-all duration-300"
             >
               <FaHeart
-                className={`mr-2 text-white ${
-                  wishlist.includes(productInfo.product_id)
-                    ? "text-red-700"
-                    : ""
-                }`}
+                className={`mr-2 text-white ${wishlist ? "text-red-700" : ""}`}
               />
-              {wishlist.includes(productInfo.product_id)
-                ? "Remove from Wishlist"
-                : "Add to Wishlist"}
+              {wishlist ? "Remove" : "Add"}
             </button>
           </div>
           <div className="mb-6">

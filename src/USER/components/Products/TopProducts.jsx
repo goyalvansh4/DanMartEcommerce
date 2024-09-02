@@ -89,7 +89,7 @@ const TopProducts = () => {
     infinite: true,
     speed: 500,
     loop: true,
-    slidesToShow: 4,
+    slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2500,
@@ -102,7 +102,7 @@ const TopProducts = () => {
         },
       },
       {
-        breakpoint: 600,
+        breakpoint: 768,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
@@ -130,13 +130,13 @@ const TopProducts = () => {
 
   return (
     <div className="my-5 font-sans py-5 w-11/12 mx-auto">
-      <h2 className="text-4xl text-center font-extrabold text-gray-800 mb-4">
+      <h2 className="text-3xl md:text-4xl text-center font-extrabold text-gray-800 mb-4">
         Top Products
       </h2>
-      <p className="text-xl text-center font-semibold text-gray-700 mb-12">
+      <p className="text-lg md:text-xl text-center font-semibold text-gray-700 mb-12">
         Product's Advantages and Attract the Attention
       </p>
-      <Slider {...settings} className="w-11/12 mx-auto flex gap-6">
+      <Slider {...settings} className="w-full mx-auto flex gap-6">
         {homeProducts.map((product) => (
           <div
             key={product.product_id}
@@ -159,7 +159,7 @@ const TopProducts = () => {
                 <img
                   src={`${imageURI + product.thumbnail}`}
                   alt={product.product_name}
-                  className="w-full h-64 object-cover object-center rounded-xl"
+                  className="w-full h-48 md:h-64 object-cover object-center rounded-xl"
                 />
               </div>
             </NavLink>
@@ -193,10 +193,10 @@ const TopProducts = () => {
                     >
                       <path
                         d="M164.96 300.004h.024c.02 0 .04-.004.059-.004H437a15.003 15.003 0 0 0 14.422-10.879l60-210a15.003 15.003 0 0 0-2.445-13.152A15.006 15.006 0 0 0 497 60H130.367l-10.722-48.254A15.003 15.003 0 0 0 105 0H15C6.715 0 0 6.715 0 15s6.715 15 15 15h77.969c1.898 8.55 51.312 230.918 54.156 243.71C131.184 280.64 120 296.536 120 315c0 24.812 20.188 45 45 45h272c8.285 0 15-6.715 15-15s-6.715-15-15-15H165c-8.27 0-15-6.73-15-15 0-8.258 6.707-14.977 14.96-14.996zM477.114 90l-51.43 180H177.032l-40-180zM150 405c0 24.813 20.188 45 45 45s45-20.188 45-45-20.188-45-45-45-45 20.188-45 45zm60 0c0 8.271-6.729 15-15 15s-15-6.729-15-15 6.729-15 15-15 15 6.729 15 15zm167 45c24.812 0 45-20.188 45-45s-20.188-45-45-45-45 20.188-45 45 20.188 45 45 45zm0-60c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15z"
-                        data-original="#000000"
-                      ></path>
+                        fill="#000000"
+                      />
                     </svg>
-                    <span>Add to Cart</span>
+                    Add to Cart
                   </>
                 )}
               </button>

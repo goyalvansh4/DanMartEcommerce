@@ -30,16 +30,16 @@ const ContactUs = () => {
           </div>
           <div className="flex items-center mb-4">
             <FaPhoneAlt className="text-xl mr-2 text-blue-500" />
-            <span>+91 8279792033</span>
+            <span>+91 9837184618</span>
           </div>
           <div className="flex items-center mb-4">
             <FaEnvelope className="text-xl mr-2 text-blue-500" />
-            <span>visionoverseas37@gmail.com</span>
+            <span>danmartglobal@gmail.com </span>
           </div>
         </div>
 
         {/* Contact Form */}
-        <div className="md:w-2/5 p-6 bg-gray-100 rounded-lg shadow-md">
+        <div className="w-full md:w-4/5 p-6 bg-gray-100 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
           <form>
             <div className="mb-4">

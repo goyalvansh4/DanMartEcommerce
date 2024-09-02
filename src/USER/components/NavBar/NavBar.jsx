@@ -1,32 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { FaHeart, FaUser, FaBoxOpen, FaChevronDown } from 'react-icons/fa';
-import { NavLink, useNavigate } from 'react-router-dom';
-import CartIconWithBadge from './CartIconWithBadge';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCartItems} from '../../store/slices/cartSlice';
-import Cookies from 'js-cookie';
-
-const categories = [
-  { id: 1, name: 'Telescope', slug: 'telescope' },
-  { id: 2, name: 'Compass with leather case', slug: 'compass-leather-case' },
-  { id: 3, name: 'Compass With Wooden Box', slug: 'compass-wooden-box' },
-];
+import React, { useState, useEffect } from "react";
+import { FaHeart, FaUser, FaBoxOpen, FaChevronDown } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router-dom";
+import CartIconWithBadge from "./CartIconWithBadge";
+import Cookies from "js-cookie";
+import GlobalAxios from "../../../../Global/GlobalAxios";
 
 const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showCategories, setShowCategories] = useState(false); // State to control the dropdown
+  const [showCategories, setShowCategories] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await GlobalAxios.get("/product-categories");
+        if (response.data.status === "success") {
+          setCategories(response.data.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const navigate = useNavigate();
 
-
-  const authToken = Cookies.get('authToken');
-   // Check if user is logged in
+  const authToken = Cookies.get("authToken");
 
   const handleLogout = () => {
-    Cookies.remove('authToken');
+    Cookies.remove("authToken");
     setShowLogoutModal(false);
-    navigate('/'); // Redirect to home page after logout
+    navigate("/"); // Redirect to home page after logout
   };
 
   const handleUserIconClick = () => {
@@ -34,7 +40,7 @@ const Navbar = () => {
   };
 
   const handleLogin = () => {
-    navigate('/login'); // Redirect to login page
+    navigate("/login"); // Redirect to login page
   };
 
   const toggleCategories = () => {
@@ -54,7 +60,7 @@ const Navbar = () => {
               Categories <FaChevronDown className="ml-1" />
             </div>
             {showCategories && (
-              <div className="absolute left-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-20">
+              <div className="absolute left-0 mt-2 w-48 md:w-64 lg:w-96 bg-white border rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
                 {categories.map((category) => (
                   <NavLink
                     key={category.id}
@@ -70,7 +76,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex-1 flex items-center justify-center">
+          <div className="hidden lg:flex flex-1 items-center justify-center">
             <div className="w-full max-w-lg">
               <input
                 type="text"
@@ -82,7 +88,10 @@ const Navbar = () => {
 
           {/* Icons Section */}
           <div className="flex items-center space-x-4">
-            <NavLink to="/wishlist" className="text-gray-800 hover:text-blue-600">
+            <NavLink
+              to="/wishlist"
+              className="text-gray-800 hover:text-blue-600"
+            >
               <FaHeart className="w-6 h-6" />
             </NavLink>
             <NavLink to="/cart" className="text-gray-800 hover:text-blue-600">
@@ -134,8 +143,12 @@ const Navbar = () => {
       {showLogoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h3 className="text-lg font-semibold text-gray-800">Confirm Logout</h3>
-            <p className="text-gray-600 mt-2">Are you sure you want to log out?</p>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Confirm Logout
+            </h3>
+            <p className="text-gray-600 mt-2">
+              Are you sure you want to log out?
+            </p>
             <div className="mt-6 flex justify-end space-x-4">
               <button
                 onClick={() => setShowLogoutModal(false)}

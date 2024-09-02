@@ -218,7 +218,9 @@ const CheckOut = () => {
                     "Place Order"
                   )}
                 </button>
+
               </form>
+              
             </div>
           </div>
         </div>
@@ -267,6 +269,7 @@ const CheckOut = () => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };

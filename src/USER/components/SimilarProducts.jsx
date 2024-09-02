@@ -60,9 +60,11 @@ const SimilarProducts = () => {
     if (wishlist.includes(product_id)) {
       dispatch(removeWishlistThunk(product_id));
       setWishlist(wishlist.filter((id) => id !== product_id));
+      toast.success("Product removed from wishlist successfully.");
     } else {
       dispatch(addWishlistThunk(product_id));
       setWishlist([...wishlist, product_id]);
+      toast.success("Product added to wishlist successfully.");
     }
   };
 

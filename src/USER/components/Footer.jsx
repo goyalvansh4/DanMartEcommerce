@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -61,13 +62,13 @@ const Footer = () => {
           <h4 className="text-lg font-semibold mb-6 text-white">Contact Us</h4>
           <ul className="space-y-4">
             <li>
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
-                Email:visionoverseas37@gmail.com
+              <a target="_blank" href="mailto:danmartglobal@gmail.com" className="text-gray-300 hover:text-white text-sm">
+                Email:danmartglobal@gmail.com 
               </a>
             </li>
             <li>
               <a href="#" className="text-gray-300 hover:text-white text-sm">
-                Phone: +91 8279792033
+                Phone: +91 9837184618
               </a>
             </li>
           </ul>
@@ -77,19 +78,19 @@ const Footer = () => {
           <h4 className="text-lg font-semibold mb-6 text-white">Quick Links</h4>
           <ul className="space-y-4">
             <li>
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
+              <NavLink to="/" className="text-gray-300 hover:text-white text-sm">
                 Home
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
+              <NavLink to="/about" className="text-gray-300 hover:text-white text-sm">
                 About Us
-              </a>
+              </NavLink>
             </li>
             <li>
-              <a href="#" className="text-gray-300 hover:text-white text-sm">
+              <NavLink to="/contact" className="text-gray-300 hover:text-white text-sm">
                 Contact Us
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>
