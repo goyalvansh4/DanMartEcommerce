@@ -91,7 +91,7 @@ const SimilarProducts = () => {
                 <FaHeart size={20} />
               </button>
             </div>
-            <NavLink to={`/products/${product.product_id}`} className="">
+            <NavLink  to={`/products/${product.product_id}/${product.products_slug}`}>
               <div className="w-full h-[250px] overflow-hidden mx-auto">
                 <img
                   src={`${imageURI + product.thumbnail}`}
